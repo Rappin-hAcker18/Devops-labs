@@ -1,0 +1,300 @@
+{
+  "policyTemplates": {
+    "description": "Common IAM policy templates for AWS security best practices",
+    "version": "2025-10-23",
+    "templates": [
+      {
+        "name": "ReadOnlyAccess",
+        "description": "Provides read-only access to all AWS services",
+        "useCase": "Ideal for auditors, monitoring systems, or users who need to view resources without making changes",
+        "policy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "autoscaling:Describe*",
+                "cloudformation:Describe*",
+                "cloudformation:List*",
+                "cloudwatch:Describe*",
+                "cloudwatch:Get*",
+                "cloudwatch:List*",
+                "ec2:Describe*",
+                "iam:Get*",
+                "iam:List*",
+                "rds:Describe*",
+                "s3:Get*",
+                "s3:List*"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      },
+      {
+        "name": "DeveloperAccess",
+        "description": "Access for developers with ability to create and manage most resources except IAM",
+        "useCase": "Development teams who need to create and manage AWS resources but shouldn't modify user access",
+        "policy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "NotAction": [
+                "iam:*",
+                "organizations:*",
+                "account:*"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "iam:CreateServiceLinkedRole",
+                "iam:DeleteServiceLinkedRole",
+                "iam:ListRoles",
+                "iam:PassRole"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      },
+      {
+        "name": "S3BucketReadWrite",
+        "description": "Read and write access to specific S3 bucket",
+        "useCase": "Applications or users that need access to specific S3 buckets",
+        "policy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:DeleteObject"
+              ],
+              "Resource": "arn:aws:s3:::YOUR-BUCKET-NAME/*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "s3:ListBucket"
+              ],
+              "Resource": "arn:aws:s3:::YOUR-BUCKET-NAME"
+            }
+          ]
+        }
+      },
+      {
+        "name": "EC2Management",
+        "description": "Full EC2 management capabilities",
+        "useCase": "Infrastructure teams managing EC2 instances",
+        "policy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ec2:*",
+                "elasticloadbalancing:*",
+                "autoscaling:*"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "iam:PassRole",
+              "Resource": "*",
+              "Condition": {
+                "StringEquals": {
+                  "iam:PassedToService": "ec2.amazonaws.com"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "DatabaseAdministrator",
+        "description": "Management access for RDS and DynamoDB",
+        "useCase": "Database administrators managing AWS database services",
+        "policy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "rds:*",
+                "dynamodb:*"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "cloudwatch:PutMetricData",
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:ListMetrics",
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      },
+      {
+        "name": "LambdaDeveloper",
+        "description": "Lambda function development and deployment",
+        "useCase": "Serverless developers working with Lambda functions",
+        "policy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "lambda:*"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "iam:PassRole"
+              ],
+              "Resource": "arn:aws:iam::*:role/lambda-*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": "arn:aws:logs:*:*:*"
+            }
+          ]
+        }
+      },
+      {
+        "name": "BillingReadOnly",
+        "description": "Read-only access to billing and cost information",
+        "useCase": "Financial teams monitoring AWS costs",
+        "policy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "aws-portal:ViewBilling",
+                "aws-portal:ViewUsage",
+                "budgets:ViewBudget",
+                "ce:GetCostAndUsage",
+                "ce:GetDimensionValues",
+                "ce:GetReservationCoverage",
+                "ce:GetReservationPurchaseRecommendation",
+                "ce:GetReservationUtilization",
+                "ce:GetUsageReport",
+                "ce:ListCostCategoryDefinitions"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      },
+      {
+        "name": "SecurityAuditor",
+        "description": "Security-focused read access for auditing",
+        "useCase": "Security teams conducting compliance audits",
+        "policy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "access-analyzer:*",
+                "cloudtrail:DescribeTrails",
+                "cloudtrail:GetTrailStatus",
+                "cloudtrail:LookupEvents",
+                "config:*",
+                "guardduty:*",
+                "iam:GenerateCredentialReport",
+                "iam:Get*",
+                "iam:List*",
+                "inspector:*",
+                "securityhub:*",
+                "trustedadvisor:Describe*"
+              ],
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "bestPractices": {
+    "policyDesign": [
+      "Always use the principle of least privilege",
+      "Use AWS managed policies when possible",
+      "Create custom policies only when necessary",
+      "Use policy conditions to add additional security constraints",
+      "Regularly review and audit policy assignments"
+    ],
+    "roleManagement": [
+      "Use IAM roles for EC2 instances and Lambda functions",
+      "Implement cross-account roles for resource sharing",
+      "Use temporary credentials whenever possible",
+      "Enable MFA for sensitive operations"
+    ],
+    "monitoring": [
+      "Enable CloudTrail for all API calls",
+      "Use AWS Config to monitor policy changes",
+      "Set up alerts for unusual IAM activity",
+      "Regularly rotate access keys and passwords"
+    ]
+  },
+  "examples": {
+    "resourceBasedPolicy": {
+      "description": "S3 bucket policy allowing access from specific IP addresses",
+      "policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Sid": "IPRestrictedAccess",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::example-bucket/*",
+            "Condition": {
+              "IpAddress": {
+                "aws:SourceIp": ["203.0.113.0/24", "198.51.100.0/24"]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "crossAccountRole": {
+      "description": "Trust policy for cross-account access",
+      "trustPolicy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": "arn:aws:iam::123456789012:root"
+            },
+            "Action": "sts:AssumeRole",
+            "Condition": {
+              "StringEquals": {
+                "sts:ExternalId": "UniqueExternalId123"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

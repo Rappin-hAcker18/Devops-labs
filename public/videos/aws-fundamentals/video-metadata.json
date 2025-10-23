@@ -1,0 +1,186 @@
+{
+  "courseId": "aws-fundamentals",
+  "videos": [
+    {
+      "lessonId": "lesson-1-1",
+      "title": "What is Cloud Computing?",
+      "duration": "15:30",
+      "videoFile": "cloud-computing-intro.mp4",
+      "thumbnail": "/lessons/cloud-intro-thumb.svg",
+      "description": "Comprehensive introduction to cloud computing concepts, service models, and business benefits.",
+      "chapters": [
+        {
+          "title": "Introduction to Cloud Computing",
+          "startTime": "00:00",
+          "endTime": "03:00"
+        },
+        {
+          "title": "Cloud vs Traditional Infrastructure",
+          "startTime": "03:00",
+          "endTime": "06:30"
+        },
+        {
+          "title": "Service Models (IaaS, PaaS, SaaS)",
+          "startTime": "06:30",
+          "endTime": "10:45"
+        },
+        {
+          "title": "Cloud Deployment Models",
+          "startTime": "10:45",
+          "endTime": "13:15"
+        },
+        {
+          "title": "Business Benefits & ROI",
+          "startTime": "13:15",
+          "endTime": "15:30"
+        }
+      ],
+      "learningObjectives": [
+        "Define cloud computing and its essential characteristics",
+        "Differentiate between IaaS, PaaS, and SaaS",
+        "Understand public, private, and hybrid cloud models",
+        "Identify business benefits of cloud adoption"
+      ],
+      "keyTerms": [
+        "Cloud Computing",
+        "Infrastructure as a Service (IaaS)",
+        "Platform as a Service (PaaS)", 
+        "Software as a Service (SaaS)",
+        "Elasticity",
+        "Scalability",
+        "Pay-as-you-go"
+      ]
+    },
+    {
+      "lessonId": "lesson-1-2",
+      "title": "AWS Core Services Overview",
+      "duration": "20:15",
+      "videoFile": "aws-core-services.mp4",
+      "thumbnail": "/lessons/aws-services-thumb.svg",
+      "description": "Essential AWS services every cloud engineer should know, from compute to storage to networking.",
+      "chapters": [
+        {
+          "title": "AWS Global Infrastructure",
+          "startTime": "00:00",
+          "endTime": "04:00"
+        },
+        {
+          "title": "Compute Services (EC2, Lambda)",
+          "startTime": "04:00",
+          "endTime": "08:30"
+        },
+        {
+          "title": "Storage Services (S3, EBS)",
+          "startTime": "08:30",
+          "endTime": "12:45"
+        },
+        {
+          "title": "Database Services (RDS, DynamoDB)",
+          "startTime": "12:45",
+          "endTime": "16:15"
+        },
+        {
+          "title": "Networking (VPC, CloudFront)",
+          "startTime": "16:15",
+          "endTime": "20:15"
+        }
+      ],
+      "learningObjectives": [
+        "Navigate AWS global infrastructure concepts",
+        "Identify core compute services and use cases",
+        "Understand storage options and best practices",
+        "Choose appropriate database solutions",
+        "Configure basic networking components"
+      ]
+    },
+    {
+      "lessonId": "lesson-1-3",
+      "title": "Setting Up Your AWS Account",
+      "duration": "45:00",
+      "videoFile": "aws-account-setup.mp4",
+      "thumbnail": "/lessons/aws-setup-thumb.svg",
+      "description": "Complete walkthrough of AWS account creation, security configuration, and billing setup.",
+      "type": "lab",
+      "chapters": [
+        {
+          "title": "Account Registration Process",
+          "startTime": "00:00",
+          "endTime": "10:00"
+        },
+        {
+          "title": "Root Account Security (MFA)",
+          "startTime": "10:00",
+          "endTime": "20:00"
+        },
+        {
+          "title": "IAM User Creation",
+          "startTime": "20:00",
+          "endTime": "30:00"
+        },
+        {
+          "title": "Billing Configuration",
+          "startTime": "30:00",
+          "endTime": "40:00"
+        },
+        {
+          "title": "Free Tier Monitoring",
+          "startTime": "40:00",
+          "endTime": "45:00"
+        }
+      ],
+      "practicalExercises": [
+        "Create AWS account with proper billing information",
+        "Enable MFA on root account using authenticator app",
+        "Create IAM admin user with console and programmatic access",
+        "Set up billing alerts for $10 and $25 thresholds",
+        "Configure account alias and explore Free Tier dashboard"
+      ]
+    },
+    {
+      "lessonId": "lesson-1-4",
+      "title": "AWS Management Console Tour",
+      "duration": "25:20",
+      "videoFile": "console-navigation.mp4",
+      "thumbnail": "/lessons/console-tour-thumb.svg",
+      "description": "Master the AWS Management Console with productivity tips and essential navigation techniques.",
+      "chapters": [
+        {
+          "title": "Console Layout & Navigation",
+          "startTime": "00:00",
+          "endTime": "06:00"
+        },
+        {
+          "title": "Service Search & Favorites",
+          "startTime": "06:00",
+          "endTime": "11:30"
+        },
+        {
+          "title": "Resource Groups & Tags",
+          "startTime": "11:30",
+          "endTime": "17:45"
+        },
+        {
+          "title": "CloudShell Introduction",
+          "startTime": "17:45",
+          "endTime": "22:00"
+        },
+        {
+          "title": "Console Customization",
+          "startTime": "22:00",
+          "endTime": "25:20"
+        }
+      ]
+    }
+  ],
+  "resources": {
+    "transcripts": "/videos/transcripts/",
+    "closedCaptions": "/videos/captions/",
+    "downloadableContent": "/resources/downloads/"
+  },
+  "streamingConfig": {
+    "formats": ["1080p", "720p", "480p", "360p"],
+    "adaptiveBitrate": true,
+    "cdn": "CloudFront",
+    "region": "us-east-1"
+  }
+}

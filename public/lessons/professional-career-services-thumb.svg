@@ -1,0 +1,191 @@
+<!-- Professional Career Services Thumbnail -->
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="careerBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e293b;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="successGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="goldAccent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fbbf24;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#careerBg)"/>
+  
+  <!-- Main Content Area -->
+  <rect x="80" y="180" width="1200" height="600" rx="16" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+  
+  <!-- Career Dashboard Mockup -->
+  <rect x="100" y="200" width="1160" height="50" rx="8" fill="#0f172a"/>
+  <text x="120" y="230" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff">
+    CloudCrew Academy Career Services Dashboard
+  </text>
+  
+  <!-- Success Metrics Grid -->
+  <g id="metricsGrid">
+    <!-- Job Placement Rate -->
+    <rect x="120" y="280" width="250" height="120" rx="12" fill="url(#successGreen)" opacity="0.9"/>
+    <text x="245" y="315" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#ffffff" text-anchor="middle">94%</text>
+    <text x="245" y="340" font-family="Arial, sans-serif" font-size="16" fill="#f0fdf4" text-anchor="middle">Job Placement Rate</text>
+    <text x="245" y="365" font-family="Arial, sans-serif" font-size="14" fill="#f0fdf4" text-anchor="middle">Within 6 Months</text>
+    <text x="245" y="385" font-family="Arial, sans-serif" font-size="14" fill="#f0fdf4" text-anchor="middle">of Completion</text>
+    
+    <!-- Average Salary -->
+    <rect x="390" y="280" width="250" height="120" rx="12" fill="url(#goldAccent)" opacity="0.9"/>
+    <text x="515" y="315" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#ffffff" text-anchor="middle">$127k</text>
+    <text x="515" y="340" font-family="Arial, sans-serif" font-size="16" fill="#fef3c7" text-anchor="middle">Average Starting Salary</text>
+    <text x="515" y="365" font-family="Arial, sans-serif" font-size="14" fill="#fef3c7" text-anchor="middle">Cloud Engineering Roles</text>
+    <text x="515" y="385" font-family="Arial, sans-serif" font-size="14" fill="#fef3c7" text-anchor="middle">2024 Graduates</text>
+    
+    <!-- Career Growth -->
+    <rect x="660" y="280" width="250" height="120" rx="12" fill="#3b82f6" opacity="0.9"/>
+    <text x="785" y="315" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#ffffff" text-anchor="middle">67%</text>
+    <text x="785" y="340" font-family="Arial, sans-serif" font-size="16" fill="#dbeafe" text-anchor="middle">Promotion Rate</text>
+    <text x="785" y="365" font-family="Arial, sans-serif" font-size="14" fill="#dbeafe" text-anchor="middle">Within First Year</text>
+    <text x="785" y="385" font-family="Arial, sans-serif" font-size="14" fill="#dbeafe" text-anchor="middle">Senior Level Roles</text>
+    
+    <!-- Enterprise Partners -->
+    <rect x="930" y="280" width="250" height="120" rx="12" fill="#8b5cf6" opacity="0.9"/>
+    <text x="1055" y="315" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#ffffff" text-anchor="middle">150+</text>
+    <text x="1055" y="340" font-family="Arial, sans-serif" font-size="16" fill="#ede9fe" text-anchor="middle">Hiring Partners</text>
+    <text x="1055" y="365" font-family="Arial, sans-serif" font-size="14" fill="#ede9fe" text-anchor="middle">Fortune 500 Companies</text>
+    <text x="1055" y="385" font-family="Arial, sans-serif" font-size="14" fill="#ede9fe" text-anchor="middle">Direct Placement</text>
+  </g>
+  
+  <!-- Career Services Features -->
+  <rect x="120" y="440" width="1060" height="300" fill="#0f172a" stroke="#374151" stroke-width="1"/>
+  <text x="650" y="475" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    Comprehensive Career Support System
+  </text>
+  
+  <!-- Service Columns -->
+  <g id="careerServices">
+    <!-- Column 1: Resume & Portfolio -->
+    <text x="200" y="515" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#fbbf24" text-anchor="middle">
+      Resume & Portfolio
+    </text>
+    <g fill="#d1d5db" font-family="Arial, sans-serif" font-size="14">
+      <text x="200" y="540" text-anchor="middle">✓ ATS-optimized resume writing</text>
+      <text x="200" y="560" text-anchor="middle">✓ GitHub portfolio optimization</text>
+      <text x="200" y="580" text-anchor="middle">✓ LinkedIn profile enhancement</text>
+      <text x="200" y="600" text-anchor="middle">✓ Technical project showcase</text>
+      <text x="200" y="620" text-anchor="middle">✓ Cloud certification display</text>
+      <text x="200" y="640" text-anchor="middle">✓ Personal branding strategy</text>
+    </g>
+    
+    <!-- Column 2: Interview Preparation -->
+    <text x="500" y="515" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#10b981" text-anchor="middle">
+      Interview Mastery
+    </text>
+    <g fill="#d1d5db" font-family="Arial, sans-serif" font-size="14">
+      <text x="500" y="540" text-anchor="middle">✓ Technical interview practice</text>
+      <text x="500" y="560" text-anchor="middle">✓ System design scenarios</text>
+      <text x="500" y="580" text-anchor="middle">✓ Behavioral question coaching</text>
+      <text x="500" y="600" text-anchor="middle">✓ Salary negotiation training</text>
+      <text x="500" y="620" text-anchor="middle">✓ Mock interview sessions</text>
+      <text x="500" y="640" text-anchor="middle">✓ Industry insider tips</text>
+    </g>
+    
+    <!-- Column 3: Job Matching -->
+    <text x="800" y="515" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#3b82f6" text-anchor="middle">
+      Job Placement
+    </text>
+    <g fill="#d1d5db" font-family="Arial, sans-serif" font-size="14">
+      <text x="800" y="540" text-anchor="middle">✓ Direct employer connections</text>
+      <text x="800" y="560" text-anchor="middle">✓ Hidden job market access</text>
+      <text x="800" y="580" text-anchor="middle">✓ Referral network activation</text>
+      <text x="800" y="600" text-anchor="middle">✓ Application tracking system</text>
+      <text x="800" y="620" text-anchor="middle">✓ Offer evaluation guidance</text>
+      <text x="800" y="640" text-anchor="middle">✓ Onboarding support</text>
+    </g>
+    
+    <!-- Column 4: Ongoing Support -->
+    <text x="1100" y="515" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#8b5cf6" text-anchor="middle">
+      Lifetime Support
+    </text>
+    <g fill="#d1d5db" font-family="Arial, sans-serif" font-size="14">
+      <text x="1100" y="540" text-anchor="middle">✓ Career advancement planning</text>
+      <text x="1100" y="560" text-anchor="middle">✓ Skill gap analysis</text>
+      <text x="1100" y="580" text-anchor="middle">✓ Industry trend updates</text>
+      <text x="1100" y="600" text-anchor="middle">✓ Professional networking</text>
+      <text x="1100" y="620" text-anchor="middle">✓ Promotion strategy guidance</text>
+      <text x="1100" y="640" text-anchor="middle">✓ Alumni mentor matching</text>
+    </g>
+  </g>
+  
+  <!-- Success Stories Sidebar -->
+  <rect x="1320" y="180" width="480" height="600" rx="16" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+  <text x="1560" y="220" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    Success Stories
+  </text>
+  
+  <!-- Success Story 1 -->
+  <rect x="1340" y="250" width="440" height="100" rx="12" fill="#059669" opacity="0.2"/>
+  <circle cx="1380" cy="300" r="25" fill="#10b981"/>
+  <text x="1380" y="308" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">MJ</text>
+  <text x="1420" y="275" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff">Marcus Johnson</text>
+  <text x="1420" y="295" font-family="Arial, sans-serif" font-size="14" fill="#d1d5db">From Security Guard → Cloud Engineer</text>
+  <text x="1420" y="315" font-family="Arial, sans-serif" font-size="14" fill="#fbbf24">$45k → $118k salary increase</text>
+  <text x="1420" y="335" font-family="Arial, sans-serif" font-size="12" fill="#9ca3af">Amazon Web Services, Seattle</text>
+  
+  <!-- Success Story 2 -->
+  <rect x="1340" y="370" width="440" height="100" rx="12" fill="#3b82f6" opacity="0.2"/>
+  <circle cx="1380" cy="420" r="25" fill="#3b82f6"/>
+  <text x="1380" y="428" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">TA</text>
+  <text x="1420" y="395" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff">Tanya Anderson</text>
+  <text x="1420" y="415" font-family="Arial, sans-serif" font-size="14" fill="#d1d5db">From Retail Manager → DevOps Engineer</text>
+  <text x="1420" y="435" font-family="Arial, sans-serif" font-size="14" fill="#fbbf24">$38k → $132k in 8 months</text>
+  <text x="1420" y="455" font-family="Arial, sans-serif" font-size="12" fill="#9ca3af">Microsoft Azure, Atlanta</text>
+  
+  <!-- Success Story 3 -->
+  <rect x="1340" y="490" width="440" height="100" rx="12" fill="#8b5cf6" opacity="0.2"/>
+  <circle cx="1380" cy="540" r="25" fill="#8b5cf6"/>
+  <text x="1380" y="548" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">DJ</text>
+  <text x="1420" y="515" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff">David Jackson</text>
+  <text x="1420" y="535" font-family="Arial, sans-serif" font-size="14" fill="#d1d5db">From Warehouse → Senior Cloud Architect</text>
+  <text x="1420" y="555" font-family="Arial, sans-serif" font-size="14" fill="#fbbf24">$32k → $165k in 14 months</text>
+  <text x="1420" y="575" font-family="Arial, sans-serif" font-size="12" fill="#9ca3af">Google Cloud, San Francisco</text>
+  
+  <!-- CTA Section -->
+  <rect x="1340" y="620" width="440" height="120" rx="12" fill="url(#goldAccent)" opacity="0.9"/>
+  <text x="1560" y="655" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    Your Success Story Starts Here
+  </text>
+  <text x="1560" y="680" font-family="Arial, sans-serif" font-size="14" fill="#fef3c7" text-anchor="middle">
+    Join 2,847 CloudCrew graduates
+  </text>
+  <text x="1560" y="700" font-family="Arial, sans-serif" font-size="14" fill="#fef3c7" text-anchor="middle">
+    earning $100k+ in cloud roles
+  </text>
+  <text x="1560" y="725" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    Start Your Transformation Today
+  </text>
+  
+  <!-- Main Title -->
+  <text x="960" y="100" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    Career Services & Job Placement Support
+  </text>
+  
+  <!-- CloudCrew Academy Branding -->
+  <rect x="80" y="820" width="400" height="60" rx="30" fill="url(#goldAccent)"/>
+  <text x="280" y="860" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">CloudCrew Academy</text>
+  
+  <!-- Premium Service Badge -->
+  <circle cx="1820" cy="120" r="60" fill="url(#successGreen)"/>
+  <text x="1820" y="110" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">CAREER</text>
+  <text x="1820" y="130" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">SERVICES</text>
+  
+  <!-- ROI Indicator -->
+  <rect x="60" y="120" width="180" height="35" rx="17" fill="#059669"/>
+  <text x="150" y="145" font-family="Arial, sans-serif" font-size="16" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">ROI: 3,200% Average</text>
+</svg>

@@ -1,0 +1,341 @@
+name: CloudCrew Academy CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '18'
+  AWS_REGION: 'us-east-1'
+
+jobs:
+  # Quality Assurance
+  test-and-lint:
+    runs-on: ubuntu-latest
+    name: Test & Lint
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run ESLint
+        run: npm run lint
+      
+      - name: Run TypeScript check
+        run: npm run type-check
+      
+      - name: Run tests
+        run: npm test -- --coverage
+      
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage/lcov.info
+          fail_ci_if_error: true
+      
+      - name: Build application
+        run: npm run build
+      
+      - name: Cache build artifacts
+        uses: actions/cache@v3
+        with:
+          path: |
+            .next
+            node_modules
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.ts', '**/*.tsx') }}
+
+  # Security Scanning
+  security-scan:
+    runs-on: ubuntu-latest
+    name: Security Scan
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run Snyk security scan
+        uses: snyk/actions/node@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+      
+      - name: Run npm audit
+        run: npm audit --audit-level high
+
+  # Backend Deployment
+  deploy-backend:
+    runs-on: ubuntu-latest
+    name: Deploy Backend
+    needs: [test-and-lint, security-scan]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    strategy:
+      matrix:
+        stage: 
+          - ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm ci
+      
+      - name: Deploy backend infrastructure
+        run: |
+          cd backend
+          npx serverless deploy --stage ${{ matrix.stage }} --verbose
+        env:
+          STAGE: ${{ matrix.stage }}
+      
+      - name: Run post-deployment tests
+        run: |
+          cd backend
+          npm run test:integration
+        env:
+          API_URL: ${{ steps.deploy.outputs.api-url }}
+          STAGE: ${{ matrix.stage }}
+      
+      - name: Store deployment outputs
+        id: deployment-outputs
+        run: |
+          cd backend
+          echo "api-url=$(npx serverless info --stage ${{ matrix.stage }} | grep 'endpoints:' -A 1 | tail -n 1 | awk '{print $3}')" >> $GITHUB_OUTPUT
+          echo "cloudfront-url=$(aws cloudformation describe-stacks --stack-name cloudcrew-academy-${{ matrix.stage }} --query 'Stacks[0].Outputs[?OutputKey==`CloudFrontDomainName`].OutputValue' --output text)" >> $GITHUB_OUTPUT
+
+  # Frontend Deployment
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    name: Deploy Frontend
+    needs: [deploy-backend]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    strategy:
+      matrix:
+        stage: 
+          - ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Configure environment variables
+        run: |
+          echo "NEXT_PUBLIC_API_URL=${{ needs.deploy-backend.outputs.api-url }}" >> .env.production
+          echo "NEXT_PUBLIC_COGNITO_USER_POOL_ID=${{ secrets.COGNITO_USER_POOL_ID_PROD }}" >> .env.production
+          echo "NEXT_PUBLIC_COGNITO_CLIENT_ID=${{ secrets.COGNITO_CLIENT_ID_PROD }}" >> .env.production
+          echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.STRIPE_PUBLISHABLE_KEY_PROD }}" >> .env.production
+          echo "NEXT_PUBLIC_CLOUDFRONT_URL=${{ needs.deploy-backend.outputs.cloudfront-url }}" >> .env.production
+        if: matrix.stage == 'prod'
+      
+      - name: Configure development environment variables
+        run: |
+          echo "NEXT_PUBLIC_API_URL=${{ needs.deploy-backend.outputs.api-url }}" >> .env.development
+          echo "NEXT_PUBLIC_COGNITO_USER_POOL_ID=${{ secrets.COGNITO_USER_POOL_ID_DEV }}" >> .env.development
+          echo "NEXT_PUBLIC_COGNITO_CLIENT_ID=${{ secrets.COGNITO_CLIENT_ID_DEV }}" >> .env.development
+          echo "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=${{ secrets.STRIPE_PUBLISHABLE_KEY_DEV }}" >> .env.development
+          echo "NEXT_PUBLIC_CLOUDFRONT_URL=${{ needs.deploy-backend.outputs.cloudfront-url }}" >> .env.development
+        if: matrix.stage == 'dev'
+      
+      - name: Build application
+        run: npm run build
+        env:
+          NODE_ENV: ${{ matrix.stage == 'prod' && 'production' || 'development' }}
+      
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: ${{ matrix.stage == 'prod' && '--prod' || '' }}
+          working-directory: ./
+
+  # Performance Testing
+  performance-test:
+    runs-on: ubuntu-latest
+    name: Performance Test
+    needs: [deploy-frontend]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+      
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.12.x
+      
+      - name: Run Lighthouse CI
+        run: lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          LHCI_BUILD_CONTEXT__CURRENT_HASH: ${{ github.sha }}
+          LHCI_BUILD_CONTEXT__COMMIT_TIME: ${{ github.event.head_commit.timestamp }}
+          LHCI_BUILD_CONTEXT__CURRENT_BRANCH: ${{ github.ref_name }}
+          LHCI_BUILD_CONTEXT__COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+
+  # End-to-End Testing
+  e2e-test:
+    runs-on: ubuntu-latest
+    name: End-to-End Tests
+    needs: [deploy-frontend]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+      
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          BASE_URL: ${{ needs.deploy-frontend.outputs.url }}
+          TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
+          TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: playwright-test-results
+          path: test-results/
+
+  # Monitoring Setup
+  setup-monitoring:
+    runs-on: ubuntu-latest
+    name: Setup Monitoring
+    needs: [deploy-backend, deploy-frontend]
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      
+      - name: Create CloudWatch alarms
+        run: |
+          # API Gateway 5xx errors
+          aws cloudwatch put-metric-alarm \
+            --alarm-name "CloudCrew-API-5xx-Errors" \
+            --alarm-description "Alert on API Gateway 5xx errors" \
+            --metric-name 5XXError \
+            --namespace AWS/ApiGateway \
+            --statistic Sum \
+            --period 300 \
+            --threshold 10 \
+            --comparison-operator GreaterThanThreshold \
+            --alarm-actions ${{ secrets.SNS_ALERT_TOPIC_ARN }}
+          
+          # Lambda errors
+          aws cloudwatch put-metric-alarm \
+            --alarm-name "CloudCrew-Lambda-Errors" \
+            --alarm-description "Alert on Lambda function errors" \
+            --metric-name Errors \
+            --namespace AWS/Lambda \
+            --statistic Sum \
+            --period 300 \
+            --threshold 5 \
+            --comparison-operator GreaterThanThreshold \
+            --alarm-actions ${{ secrets.SNS_ALERT_TOPIC_ARN }}
+          
+          # High billing alert
+          aws cloudwatch put-metric-alarm \
+            --alarm-name "CloudCrew-High-Billing" \
+            --alarm-description "Alert when billing exceeds $500" \
+            --metric-name EstimatedCharges \
+            --namespace AWS/Billing \
+            --statistic Maximum \
+            --period 86400 \
+            --threshold 500 \
+            --comparison-operator GreaterThanThreshold \
+            --alarm-actions ${{ secrets.SNS_BILLING_ALERT_ARN }}
+
+  # Notification
+  notify-success:
+    runs-on: ubuntu-latest
+    name: Notify Success
+    needs: [deploy-backend, deploy-frontend, performance-test, e2e-test]
+    if: success() && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: success
+          text: '🎉 CloudCrew Academy successfully deployed to production!'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    name: Notify Failure
+    needs: [deploy-backend, deploy-frontend, performance-test, e2e-test]
+    if: failure() && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: failure
+          text: '🚨 CloudCrew Academy deployment failed!'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow

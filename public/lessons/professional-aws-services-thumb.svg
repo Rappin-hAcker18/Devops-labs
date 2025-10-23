@@ -1,0 +1,114 @@
+<!-- Professional AWS Services Deep Dive Thumbnail -->
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="darkBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0a0e13;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a202c;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="awsBrand" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff9900;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#232f3e;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#darkBg)"/>
+  
+  <!-- Real AWS Console Interface Mockup -->
+  <rect x="80" y="120" width="1100" height="700" rx="12" fill="#232f3e" stroke="#485563" stroke-width="2"/>
+  <rect x="80" y="120" width="1100" height="50" rx="12" fill="#161e2d"/>
+  <text x="100" y="150" font-family="Arial, sans-serif" font-size="16" fill="#ffffff">aws.amazon.com/console</text>
+  
+  <!-- Navigation Bar -->
+  <rect x="100" y="190" width="1060" height="40" fill="#2d3748"/>
+  <text x="120" y="215" font-family="Arial, sans-serif" font-size="14" fill="#a0aec0">Services</text>
+  <text x="220" y="215" font-family="Arial, sans-serif" font-size="14" fill="#a0aec0">Solutions</text>
+  <text x="320" y="215" font-family="Arial, sans-serif" font-size="14" fill="#a0aec0">Support</text>
+  
+  <!-- Service Cards Grid -->
+  <g id="serviceCards">
+    <!-- EC2 Card -->
+    <rect x="120" y="260" width="250" height="150" rx="8" fill="#38a169" opacity="0.8"/>
+    <text x="245" y="290" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">Amazon EC2</text>
+    <text x="245" y="315" font-family="Arial, sans-serif" font-size="14" fill="#c6f6d5" text-anchor="middle">Virtual Servers</text>
+    <text x="245" y="340" font-family="Arial, sans-serif" font-size="12" fill="#c6f6d5" text-anchor="middle">Scalable computing capacity</text>
+    <text x="245" y="360" font-family="Arial, sans-serif" font-size="12" fill="#c6f6d5" text-anchor="middle">in the Amazon cloud</text>
+    
+    <!-- S3 Card -->
+    <rect x="390" y="260" width="250" height="150" rx="8" fill="#3182ce" opacity="0.8"/>
+    <text x="515" y="290" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">Amazon S3</text>
+    <text x="515" y="315" font-family="Arial, sans-serif" font-size="14" fill="#bee3f8" text-anchor="middle">Object Storage</text>
+    <text x="515" y="340" font-family="Arial, sans-serif" font-size="12" fill="#bee3f8" text-anchor="middle">Industry-leading scalability</text>
+    <text x="515" y="360" font-family="Arial, sans-serif" font-size="12" fill="#bee3f8" text-anchor="middle">and data availability</text>
+    
+    <!-- RDS Card -->
+    <rect x="660" y="260" width="250" height="150" rx="8" fill="#d69e2e" opacity="0.8"/>
+    <text x="785" y="290" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">Amazon RDS</text>
+    <text x="785" y="315" font-family="Arial, sans-serif" font-size="14" fill="#faf089" text-anchor="middle">Managed Database</text>
+    <text x="785" y="340" font-family="Arial, sans-serif" font-size="12" fill="#faf089" text-anchor="middle">Easy to deploy, operate</text>
+    <text x="785" y="360" font-family="Arial, sans-serif" font-size="12" fill="#faf089" text-anchor="middle">and scale relational databases</text>
+    
+    <!-- Lambda Card -->
+    <rect x="120" y="430" width="250" height="150" rx="8" fill="#9f7aea" opacity="0.8"/>
+    <text x="245" y="460" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">AWS Lambda</text>
+    <text x="245" y="485" font-family="Arial, sans-serif" font-size="14" fill="#e9d8fd" text-anchor="middle">Serverless Compute</text>
+    <text x="245" y="510" font-family="Arial, sans-serif" font-size="12" fill="#e9d8fd" text-anchor="middle">Run code without</text>
+    <text x="245" y="530" font-family="Arial, sans-serif" font-size="12" fill="#e9d8fd" text-anchor="middle">managing servers</text>
+    
+    <!-- VPC Card -->
+    <rect x="390" y="430" width="250" height="150" rx="8" fill="#ed8936" opacity="0.8"/>
+    <text x="515" y="460" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">Amazon VPC</text>
+    <text x="515" y="485" font-family="Arial, sans-serif" font-size="14" fill="#fed7c3" text-anchor="middle">Virtual Private Cloud</text>
+    <text x="515" y="510" font-family="Arial, sans-serif" font-size="12" fill="#fed7c3" text-anchor="middle">Isolated cloud resources</text>
+    <text x="515" y="530" font-family="Arial, sans-serif" font-size="12" fill="#fed7c3" text-anchor="middle">within the AWS cloud</text>
+    
+    <!-- CloudWatch Card -->
+    <rect x="660" y="430" width="250" height="150" rx="8" fill="#38b2ac" opacity="0.8"/>
+    <text x="785" y="460" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">CloudWatch</text>
+    <text x="785" y="485" font-family="Arial, sans-serif" font-size="14" fill="#b2f5ea" text-anchor="middle">Monitoring</text>
+    <text x="785" y="510" font-family="Arial, sans-serif" font-size="12" fill="#b2f5ea" text-anchor="middle">Monitor AWS resources</text>
+    <text x="785" y="530" font-family="Arial, sans-serif" font-size="12" fill="#b2f5ea" text-anchor="middle">and applications</text>
+  </g>
+  
+  <!-- Professional Instructor -->
+  <rect x="1250" y="200" width="300" height="400" rx="12" fill="#2d3748" opacity="0.9"/>
+  <circle cx="1400" cy="320" r="60" fill="#4a5568"/>
+  <text x="1400" y="330" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">AWS Expert</text>
+  <text x="1400" y="450" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff" text-anchor="middle">Live Demo</text>
+  <text x="1400" y="480" font-family="Arial, sans-serif" font-size="14" fill="#a0aec0" text-anchor="middle">Real AWS Console</text>
+  <text x="1400" y="500" font-family="Arial, sans-serif" font-size="14" fill="#a0aec0" text-anchor="middle">Hands-On Training</text>
+  
+  <!-- Main Title -->
+  <text x="960" y="100" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    AWS Core Services Deep Dive
+  </text>
+  
+  <!-- Course Info -->
+  <rect x="1250" y="650" width="300" height="100" rx="12" fill="url(#awsBrand)" opacity="0.9"/>
+  <text x="1400" y="680" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    22 Minutes
+  </text>
+  <text x="1400" y="705" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">
+    Professional Training
+  </text>
+  <text x="1400" y="725" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">
+    Real-World Examples
+  </text>
+  
+  <!-- CloudCrew Academy Logo -->
+  <rect x="80" y="850" width="300" height="60" rx="30" fill="url(#awsBrand)"/>
+  <text x="230" y="885" font-family="Arial, sans-serif" font-size="24" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">CloudCrew Academy</text>
+  
+  <!-- Video Number -->
+  <circle cx="1820" cy="120" r="50" fill="#ff9900"/>
+  <text x="1820" y="135" font-family="Arial, sans-serif" font-size="32" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">2</text>
+  
+  <!-- Professional Certifications -->
+  <rect x="1250" y="120" width="80" height="30" rx="15" fill="#38a169"/>
+  <text x="1290" y="140" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle">AWS SAA</text>
+  
+  <rect x="1340" y="120" width="80" height="30" rx="15" fill="#3182ce"/>
+  <text x="1380" y="140" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle">AWS SAP</text>
+</svg>

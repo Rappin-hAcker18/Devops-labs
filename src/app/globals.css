@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-dark-border-primary;
+  }
+  
+  body {
+    @apply bg-dark-bg-primary text-dark-text-primary font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    background: linear-gradient(135deg, #0a0e1a 0%, #1e293b 100%);
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display text-dark-text-primary;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 hover:scale-105;
+  }
+  
+  .btn-secondary {
+    @apply bg-gradient-to-r from-secondary-700 to-secondary-800 hover:from-secondary-600 hover:to-secondary-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:scale-105;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-primary-500 text-primary-400 hover:bg-primary-500 hover:text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 hover:scale-105 hover:shadow-lg hover:shadow-primary-500/25;
+  }
+  
+  .btn-neon {
+    @apply bg-gradient-to-r from-neon-cyan to-neon-purple text-dark-bg-primary font-bold py-3 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-neon-cyan/25 hover:shadow-neon-purple/40 hover:scale-105;
+  }
+  
+  .card {
+    @apply bg-dark-bg-card border border-dark-border-primary rounded-2xl p-6 shadow-2xl backdrop-blur-sm;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(51, 65, 85, 0.6) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+  }
+  
+  .card-elevated {
+    @apply bg-dark-bg-elevated border border-dark-border-secondary rounded-2xl p-6 shadow-2xl backdrop-blur-sm hover:shadow-primary-500/10 transition-all duration-300;
+    background: linear-gradient(135deg, rgba(51, 65, 85, 0.9) 0%, rgba(71, 85, 105, 0.7) 100%);
+  }
+  
+  .input {
+    @apply bg-dark-bg-tertiary border border-dark-border-primary text-dark-text-primary placeholder-dark-text-muted rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all duration-300 focus:shadow-lg focus:shadow-primary-500/20;
+  }
+  
+  .mobile-container {
+    @apply max-w-sm mx-auto px-4 py-6;
+  }
+  
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-16 sm:py-24;
+  }
+  
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-400 via-accent-400 to-neon-purple bg-clip-text text-transparent;
+  }
+  
+  .neon-text {
+    @apply bg-gradient-to-r from-neon-cyan to-neon-purple bg-clip-text text-transparent;
+  }
+  
+  .urban-glow {
+    @apply shadow-2xl shadow-primary-500/30;
+  }
+  
+  .neon-glow {
+    @apply shadow-2xl shadow-neon-cyan/30;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+  
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  @keyframes glow {
+    from { 
+      box-shadow: 0 0 20px #3b82f6, 0 0 30px #3b82f6, 0 0 40px #3b82f6;
+    }
+    to { 
+      box-shadow: 0 0 30px #8b5cf6, 0 0 40px #8b5cf6, 0 0 50px #8b5cf6;
+    }
+  }
+  
+  .glass-morphism {
+    background: rgba(30, 41, 59, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .neon-border {
+    border: 2px solid transparent;
+    background: linear-gradient(#1e293b, #1e293b) padding-box,
+                linear-gradient(45deg, #00ffff, #8b5cf6) border-box;
+  }
+}
+
+/* Modern Dark Theme Responsive Design */
+@media (max-width: 640px) {
+  .mobile-optimized {
+    @apply text-sm leading-relaxed;
+  }
+  
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-dark-bg-card border-t border-dark-border-primary z-50 backdrop-blur-lg;
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.95) 100%);
+  }
+}
+
+/* Modern Urban Scrollbar */
+::-webkit-scrollbar {
+  @apply w-3;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-bg-secondary;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gradient-to-b from-primary-500 to-primary-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gradient-to-b from-primary-400 to-primary-600;
+}

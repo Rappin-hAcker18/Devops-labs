@@ -1,0 +1,152 @@
+<!-- Professional AWS Hands-On Lab Thumbnail -->
+<svg width="1920" height="1080" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="labBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a202c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2d3748;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="terminalGreen" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22543d;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#38a169;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="awsOrange" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff9900;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ff6b00;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1920" height="1080" fill="url(#labBg)"/>
+  
+  <!-- Split Screen: AWS Console + Terminal -->
+  
+  <!-- AWS Console Side -->
+  <rect x="60" y="150" width="850" height="550" rx="12" fill="#232f3e" stroke="#4a5568" stroke-width="2"/>
+  <rect x="60" y="150" width="850" height="40" rx="12" fill="#161e2d"/>
+  <text x="80" y="175" font-family="monospace" font-size="14" fill="#ffffff">EC2 Management Console</text>
+  
+  <!-- EC2 Instances Table -->
+  <rect x="80" y="220" width="810" height="40" fill="#2d3748"/>
+  <text x="100" y="245" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">Instance ID</text>
+  <text x="250" y="245" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">Type</text>
+  <text x="350" y="245" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">State</text>
+  <text x="450" y="245" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">Public IP</text>
+  <text x="650" y="245" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff">Key Pair</text>
+  
+  <!-- Active Instance Row -->
+  <rect x="80" y="270" width="810" height="35" fill="#38a169" opacity="0.3"/>
+  <text x="100" y="292" font-family="monospace" font-size="12" fill="#ffffff">i-0abc123def456789</text>
+  <text x="250" y="292" font-family="monospace" font-size="12" fill="#ffffff">t2.micro</text>
+  <circle cx="370" cy="287" r="6" fill="#38a169"/>
+  <text x="385" y="292" font-family="monospace" font-size="12" fill="#ffffff">running</text>
+  <text x="450" y="292" font-family="monospace" font-size="12" fill="#ffffff">3.15.42.108</text>
+  <text x="650" y="292" font-family="monospace" font-size="12" fill="#ffffff">my-ec2-key</text>
+  
+  <!-- S3 Bucket Configuration -->
+  <rect x="80" y="340" width="810" height="200" fill="#1a202c" stroke="#4a5568" stroke-width="1"/>
+  <text x="100" y="365" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#ffffff">S3 Bucket: my-web-hosting-bucket</text>
+  
+  <!-- S3 File Structure -->
+  <g fill="#a0aec0" font-family="monospace" font-size="12">
+    <text x="120" y="390">📁 css/</text>
+    <text x="120" y="410">📁 js/</text>
+    <text x="120" y="430">📁 images/</text>
+    <text x="120" y="450">📄 index.html</text>
+    <text x="120" y="470">📄 error.html</text>
+    <text x="120" y="490">⚙️ Static Website Hosting: Enabled</text>
+    <text x="120" y="510">🌐 Endpoint: my-web-hosting-bucket.s3-website-us-east-1.amazonaws.com</text>
+  </g>
+  
+  <!-- Terminal Side -->
+  <rect x="970" y="150" width="850" height="550" rx="12" fill="#000000" stroke="#4a5568" stroke-width="2"/>
+  <rect x="970" y="150" width="850" height="40" rx="12" fill="url(#terminalGreen)"/>
+  <text x="990" y="175" font-family="monospace" font-size="14" fill="#ffffff">Terminal - AWS CLI</text>
+  
+  <!-- Terminal Content -->
+  <g fill="#00ff00" font-family="monospace" font-size="14">
+    <text x="990" y="210">ubuntu@cloudcrew:~$ aws ec2 describe-instances</text>
+    <text x="990" y="235" fill="#ffffff">{</text>
+    <text x="1010" y="255" fill="#ffd700">"Reservations": [</text>
+    <text x="1030" y="275" fill="#ffd700">"Instances": [</text>
+    <text x="1050" y="295" fill="#ffffff">"InstanceId": "i-0abc123def456789",</text>
+    <text x="1050" y="315" fill="#ffffff">"State": { "Name": "running" },</text>
+    <text x="1050" y="335" fill="#ffffff">"InstanceType": "t2.micro"</text>
+    
+    <text x="990" y="380">ubuntu@cloudcrew:~$ aws s3 sync . s3://my-web-hosting-bucket</text>
+    <text x="990" y="405" fill="#00ff00">upload: ./index.html to s3://my-web-hosting-bucket/index.html</text>
+    <text x="990" y="425" fill="#00ff00">upload: ./css/style.css to s3://my-web-hosting-bucket/css/style.css</text>
+    <text x="990" y="445" fill="#00ff00">upload: ./js/app.js to s3://my-web-hosting-bucket/js/app.js</text>
+    
+    <text x="990" y="485">ubuntu@cloudcrew:~$ curl -I http://my-web-hosting-bucket.s3-website-us-east-1.amazonaws.com</text>
+    <text x="990" y="505" fill="#00ff00">HTTP/1.1 200 OK</text>
+    <text x="990" y="525" fill="#00ff00">Content-Type: text/html</text>
+    <text x="990" y="545" fill="#00ff00">Server: AmazonS3</text>
+    <text x="990" y="565" fill="#ffffff">ubuntu@cloudcrew:~$ █</text>
+  </g>
+  
+  <!-- Main Title -->
+  <text x="960" y="100" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    AWS Hands-On Lab: Deploy Your First Web App
+  </text>
+  
+  <!-- Professional Instructor Area -->
+  <rect x="1450" y="750" width="350" height="250" rx="12" fill="#2d3748" opacity="0.95"/>
+  <circle cx="1625" cy="830" r="40" fill="#ff9900"/>
+  <text x="1625" y="840" font-family="Arial, sans-serif" font-size="12" fill="#ffffff" text-anchor="middle">Expert</text>
+  <text x="1625" y="890" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    Step-by-Step Guide
+  </text>
+  <text x="1625" y="920" font-family="Arial, sans-serif" font-size="14" fill="#a0aec0" text-anchor="middle">
+    Real AWS Account Setup
+  </text>
+  <text x="1625" y="945" font-family="Arial, sans-serif" font-size="14" fill="#a0aec0" text-anchor="middle">
+    Live Console Demo
+  </text>
+  <text x="1625" y="970" font-family="Arial, sans-serif" font-size="14" fill="#a0aec0" text-anchor="middle">
+    Production-Ready Deploy
+  </text>
+  
+  <!-- Course Duration -->
+  <rect x="100" y="750" width="200" height="80" rx="40" fill="url(#awsOrange)"/>
+  <text x="200" y="780" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    45 Minutes
+  </text>
+  <text x="200" y="805" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">
+    Hands-On Lab
+  </text>
+  
+  <!-- Lab Steps -->
+  <rect x="350" y="750" width="450" height="200" rx="12" fill="#1a202c" opacity="0.9"/>
+  <text x="575" y="780" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#ffffff" text-anchor="middle">
+    Lab Objectives
+  </text>
+  <g fill="#a0aec0" font-family="Arial, sans-serif" font-size="14">
+    <text x="370" y="810">✓ Create and launch EC2 instance</text>
+    <text x="370" y="835">✓ Configure S3 bucket for web hosting</text>
+    <text x="370" y="860">✓ Deploy static website</text>
+    <text x="370" y="885">✓ Connect domain and test live site</text>
+    <text x="370" y="910">✓ Monitor with CloudWatch</text>
+    <text x="370" y="935">✓ Cost optimization tips</text>
+  </g>
+  
+  <!-- CloudCrew Academy Branding -->
+  <rect x="60" y="1000" width="400" height="60" rx="30" fill="url(#awsOrange)"/>
+  <text x="260" y="1040" font-family="Arial, sans-serif" font-size="28" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">CloudCrew Academy</text>
+  
+  <!-- Video Number -->
+  <circle cx="1820" cy="120" r="60" fill="#38a169"/>
+  <text x="1820" y="135" font-family="Arial, sans-serif" font-size="36" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">3</text>
+  
+  <!-- Difficulty Level -->
+  <rect x="60" y="120" width="120" height="30" rx="15" fill="#38a169"/>
+  <text x="120" y="140" font-family="Arial, sans-serif" font-size="14" font-weight="bold" 
+        fill="#ffffff" text-anchor="middle">BEGINNER</text>
+  
+  <!-- Prerequisites -->
+  <rect x="200" y="120" width="150" height="30" rx="15" fill="#3182ce"/>
+  <text x="275" y="140" font-family="Arial, sans-serif" font-size="14" fill="#ffffff" text-anchor="middle">
+    AWS Free Tier
+  </text>
+</svg>
