@@ -2,7 +2,7 @@
 
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -28,7 +28,7 @@ interface VerificationResult {
   error?: string;
 }
 
-export default function VerifyCertificatePage() {
+function VerifyCertificateContent() {
   const searchParams = useSearchParams();
   const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null);
   const [isVerifying, setIsVerifying] = useState(true);
@@ -293,5 +293,13 @@ export default function VerifyCertificatePage() {
       
       <Footer />
     </main>
+  );
+}
+
+export default function VerifyCertificatePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-dark-bg flex items-center justify-center">Loading...</div>}>
+      <VerifyCertificateContent />
+    </Suspense>
   );
 }

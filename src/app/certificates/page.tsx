@@ -2,7 +2,7 @@
 
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { 
   Award, 
   Download, 
@@ -26,7 +26,7 @@ interface Certificate {
   skills: string[];
 }
 
-export default function CertificatePage() {
+function CertificateContent() {
   const searchParams = useSearchParams();
   const certificateRef = useRef<HTMLDivElement>(null);
   const [certificate, setCertificate] = useState<Certificate | null>(null);
@@ -321,5 +321,13 @@ export default function CertificatePage() {
       
       <Footer />
     </main>
+  );
+}
+
+export default function CertificatePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-dark-bg flex items-center justify-center">Loading...</div>}>
+      <CertificateContent />
+    </Suspense>
   );
 }

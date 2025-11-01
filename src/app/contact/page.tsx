@@ -3,7 +3,7 @@
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Phone, Mail, Calendar, Building2, Loader2 } from "lucide-react";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 type FormState = {
@@ -26,7 +26,7 @@ const initialState: FormState = {
   message: "",
 };
 
-export default function ContactPage() {
+function ContactContent() {
   const [formState, setFormState] = useState<FormState>(initialState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
@@ -343,5 +343,13 @@ export default function ContactPage() {
 
       <Footer />
     </main>
+  );
+}
+
+export default function ContactPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-dark-bg flex items-center justify-center">Loading...</div>}>
+      <ContactContent />
+    </Suspense>
   );
 }
