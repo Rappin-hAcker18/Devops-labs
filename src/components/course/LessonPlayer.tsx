@@ -71,13 +71,12 @@ function VideoLesson({ lesson, onComplete }: { lesson: any; onComplete: () => vo
     <div className="space-y-6">
       {/* Video Player */}
       <VideoPlayer
-        src={lesson.videoUrl || "/api/placeholder-video.mp4"}
+        videoId={lesson.id.toString()}
+        courseId="current-course" // In production, pass actual courseId
         title={lesson.title}
-        videoId={lesson.id}
         userId="current-user" // In production, get from auth context
         onProgress={handleVideoProgress}
         onComplete={handleVideoComplete}
-        poster={lesson.thumbnail}
       />
 
       {/* Video Controls */}
