@@ -3,11 +3,11 @@
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { Mail, ArrowRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { authService } from "@/lib/auth";
 
-export default function ConfirmPage() {
+function ConfirmContent() {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -162,5 +162,13 @@ export default function ConfirmPage() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function ConfirmPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-dark-bg flex items-center justify-center">Loading...</div>}>
+      <ConfirmContent />
+    </Suspense>
   );
 }
