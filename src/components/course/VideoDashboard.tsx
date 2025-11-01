@@ -98,11 +98,10 @@ export function VideoDashboard({ courseId, showAnalytics = false }: VideoDashboa
 
         {/* Video Player */}
         <VideoPlayer
-          src={VideoStorage.getOptimalSource(selectedVideo).url}
-          title={selectedVideo.title}
           videoId={selectedVideo.id}
+          courseId="video-library"
+          title={selectedVideo.title}
           userId="current-user"
-          poster={selectedVideo.thumbnail}
           onComplete={handleVideoComplete}
         />
 
