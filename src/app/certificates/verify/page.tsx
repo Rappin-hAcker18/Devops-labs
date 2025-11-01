@@ -278,13 +278,13 @@ export default function VerifyCertificatePage() {
 
             {/* CTA */}
             <div className="mt-8 text-center">
-              <a
+              <Link
                 href="/courses"
                 className="btn-primary inline-flex items-center gap-2"
               >
                 Explore Our Courses
                 <ExternalLink className="w-4 h-4" />
-              </a>
+              </Link>
             </div>
           </div>
         </section>
