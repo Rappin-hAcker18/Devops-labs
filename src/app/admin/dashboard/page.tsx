@@ -84,8 +84,9 @@ export default function AdminDashboard() {
         }
       });
       
+      let videosData: any[] = [];
       if (videosResponse.ok) {
-        const videosData = await videosResponse.json();
+        videosData = await videosResponse.json();
         setVideos(videosData || []);
       }
 
@@ -96,8 +97,9 @@ export default function AdminDashboard() {
         }
       });
 
+      let enrollmentsData: any[] = [];
       if (enrollmentsResponse.ok) {
-        const enrollmentsData = await enrollmentsResponse.json();
+        enrollmentsData = await enrollmentsResponse.json();
         setEnrollments(enrollmentsData || []);
       }
 
