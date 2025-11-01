@@ -1,0 +1,14 @@
+# Amplify Ignore - Exclude backend Lambda functions from deployment
+backend/
+backend/**/*
+
+# Exclude other unnecessary files
+.git/
+.github/
+node_modules/
+.env*
+*.log
+.DS_Store
+coverage/
+test-results/
+playwright-report/
