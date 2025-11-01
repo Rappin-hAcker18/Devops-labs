@@ -3,14 +3,17 @@
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { UserPlus, Lock, Mail, Eye, EyeOff, User, Phone, MapPin, Check, ArrowRight } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { authService } from "@/lib/auth";
 
 export default function SignupPage() {
+  const [mounted, setMounted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState("free");
   const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -22,6 +25,10 @@ export default function SignupPage() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -54,28 +61,47 @@ export default function SignupPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    console.log('🚀 Form submitted with data:', formData);
     
+    if (!validateForm()) {
+      console.log('❌ Form validation failed');
+      return;
+    }
+    
+    console.log('✅ Form validation passed');
     setIsLoading(true);
+    setErrors({});
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('📝 Attempting signup with:', { email: formData.email, firstName: formData.firstName, lastName: formData.lastName });
       
-      // Demo signup - just store the data and redirect
-      localStorage.setItem('authToken', 'demo-token-' + Date.now());
-      localStorage.setItem('userEmail', formData.email);
-      localStorage.setItem('subscriptionTier', selectedPlan);
+      // Call Cognito signup
+      const result = await authService.signUp({
+        email: formData.email,
+        password: formData.password,
+        firstName: formData.firstName,
+        lastName: formData.lastName
+      });
       
-      // Redirect based on selected plan
-      if (selectedPlan === 'free') {
-        router.push('/courses');
+      console.log('📊 Signup result:', result);
+      
+      if (result.success) {
+        // Set success message
+        setSuccessMessage(`Account created successfully! Check your email (${formData.email}) for a verification code.`);
+        
+        // Redirect after a brief delay to show the message
+        setTimeout(() => {
+          console.log('🔄 Redirecting to confirmation page');
+          router.push(`/confirm?email=${encodeURIComponent(formData.email)}`);
+        }, 2000);
       } else {
-        router.push(`/checkout?plan=${selectedPlan}`);
+        console.error('❌ Signup failed:', result.error);
+        setErrors({ submit: result.error || "Registration failed. Please try again." });
+        setIsLoading(false);
       }
     } catch (error) {
-      setErrors({ submit: "Registration failed. Please try again." });
-    } finally {
+      console.error('Signup error:', error);
+      setErrors({ submit: error instanceof Error ? error.message : "Registration failed. Please try again." });
       setIsLoading(false);
     }
   };
@@ -99,15 +125,15 @@ export default function SignupPage() {
       id: "free",
       name: "Free Tier",
       price: "$0",
-      period: "/month",
+      period: "forever",
       description: "Perfect for getting started",
       features: ["Course previews", "Community access", "Basic resources"]
     },
     {
       id: "standard",
       name: "Standard",
-      price: "$49",
-      period: "/month", 
+      price: "$297",
+      period: "one-time", 
       description: "Full course access",
       features: ["All courses", "Hands-on labs", "Certification", "Email support"],
       popular: true
@@ -115,15 +141,19 @@ export default function SignupPage() {
     {
       id: "premium",
       name: "Premium",
-      price: "$149",
-      period: "/month",
+      price: "$597",
+      period: "one-time",
       description: "Complete career transformation",
       features: ["Everything in Standard", "1-on-1 mentoring", "Career services", "Job placement support"]
     }
   ];
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
-    <main className="min-h-screen bg-dark-bg-primary">
+    <main className="min-h-screen bg-dark-bg-primary" suppressHydrationWarning>
       <Navigation />
       
       <div className="pt-16 pb-20">
@@ -201,7 +231,7 @@ export default function SignupPage() {
 
             {/* Signup Form */}
             <div className="card-elevated">
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Personal Information */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -212,10 +242,14 @@ export default function SignupPage() {
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-text-muted" />
                       <input
                         type="text"
-                        className="w-full pl-10 pr-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleInputChange}
+                        className={`w-full pl-10 pr-4 py-3 bg-dark-bg-secondary border ${errors.firstName ? 'border-red-500' : 'border-dark-border'} rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200`}
                         placeholder="Your first name"
                         required
                       />
+                      {errors.firstName && <p className="text-red-400 text-xs mt-1">{errors.firstName}</p>}
                     </div>
                   </div>
                   
@@ -227,10 +261,14 @@ export default function SignupPage() {
                       <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-text-muted" />
                       <input
                         type="text"
-                        className="w-full pl-10 pr-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleInputChange}
+                        className={`w-full pl-10 pr-4 py-3 bg-dark-bg-secondary border ${errors.lastName ? 'border-red-500' : 'border-dark-border'} rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200`}
                         placeholder="Your last name"
                         required
                       />
+                      {errors.lastName && <p className="text-red-400 text-xs mt-1">{errors.lastName}</p>}
                     </div>
                   </div>
                 </div>
@@ -244,10 +282,14 @@ export default function SignupPage() {
                     <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-text-muted" />
                     <input
                       type="email"
-                      className="w-full pl-10 pr-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      className={`w-full pl-10 pr-4 py-3 bg-dark-bg-secondary border ${errors.email ? 'border-red-500' : 'border-dark-border'} rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200`}
                       placeholder="your@email.com"
                       required
                     />
+                    {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
                   </div>
                 </div>
 
@@ -261,6 +303,9 @@ export default function SignupPage() {
                       <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-text-muted" />
                       <input
                         type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
                         className="w-full pl-10 pr-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200"
                         placeholder="(555) 123-4567"
                       />
@@ -275,6 +320,9 @@ export default function SignupPage() {
                       <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-text-muted" />
                       <input
                         type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleInputChange}
                         className="w-full pl-10 pr-4 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200"
                         placeholder="Your city"
                       />
@@ -292,7 +340,10 @@ export default function SignupPage() {
                       <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-text-muted" />
                       <input
                         type={showPassword ? "text" : "password"}
-                        className="w-full pl-10 pr-10 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        className={`w-full pl-10 pr-10 py-3 bg-dark-bg-secondary border ${errors.password ? 'border-red-500' : 'border-dark-border'} rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200`}
                         placeholder="••••••••"
                         required
                       />
@@ -304,6 +355,7 @@ export default function SignupPage() {
                         {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
                     </div>
+                    {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
                   </div>
                   
                   <div>
@@ -314,7 +366,10 @@ export default function SignupPage() {
                       <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-dark-text-muted" />
                       <input
                         type={showConfirmPassword ? "text" : "password"}
-                        className="w-full pl-10 pr-10 py-3 bg-dark-bg-secondary border border-dark-border rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                        className={`w-full pl-10 pr-10 py-3 bg-dark-bg-secondary border ${errors.confirmPassword ? 'border-red-500' : 'border-dark-border'} rounded-lg text-dark-text-primary placeholder-dark-text-muted focus:border-primary-400 focus:ring-1 focus:ring-primary-400 transition-colors duration-200`}
                         placeholder="••••••••"
                         required
                       />
@@ -326,6 +381,7 @@ export default function SignupPage() {
                         {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                       </button>
                     </div>
+                    {errors.confirmPassword && <p className="text-red-400 text-xs mt-1">{errors.confirmPassword}</p>}
                   </div>
                 </div>
 
@@ -361,6 +417,14 @@ export default function SignupPage() {
                   </p>
                 </div>
 
+                {/* Success Message */}
+                {successMessage && (
+                  <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-4">
+                    <p className="text-green-400 text-sm font-medium">✅ {successMessage}</p>
+                    <p className="text-green-300 text-xs mt-2">Redirecting to verification page...</p>
+                  </div>
+                )}
+
                 {/* Error Display */}
                 {errors.submit && (
                   <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4">
@@ -371,11 +435,13 @@ export default function SignupPage() {
                 {/* Create Account Button */}
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={isLoading || !!successMessage}
                   className="w-full bg-urban-gradient text-white font-semibold py-3 rounded-lg hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {isLoading 
                     ? "Creating Account..." 
+                    : successMessage
+                    ? "Success! Redirecting..."
                     : selectedPlan === "free" 
                     ? "Create Free Account" 
                     : "Start Your Journey"

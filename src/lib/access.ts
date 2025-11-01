@@ -12,8 +12,37 @@ export interface UserAccess {
   canAccessFeature: (feature: string) => boolean;
 }
 
+export async function fetchUserTier(): Promise<SubscriptionTier> {
+  try {
+    const token = localStorage.getItem('idToken');
+    if (!token) return 'free';
+
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch user tier');
+      return 'free';
+    }
+
+    const data = await response.json();
+    const tier = data.subscriptionTier || 'free';
+    
+    // Cache in localStorage for quick access
+    localStorage.setItem('subscriptionTier', tier);
+    
+    return tier as SubscriptionTier;
+  } catch (error) {
+    console.error('Error fetching user tier:', error);
+    return 'free';
+  }
+}
+
 export function getUserAccess(): UserAccess {
-  // Get tier from localStorage (demo mode) - only on client side
+  // Get tier from localStorage (synced with backend)
   const tier = (typeof window !== 'undefined' 
     ? (localStorage.getItem('subscriptionTier') as SubscriptionTier) 
     : 'free') || 'free';

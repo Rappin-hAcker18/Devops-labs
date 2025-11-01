@@ -8,36 +8,42 @@ const dynamoDb = DynamoDBDocumentClient.from(client);
 const headers = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type,Authorization',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
 };
 
 export const getProfile = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   try {
-    const userId = event.requestContext.authorizer?.claims.sub;
+    // Get email from Cognito claims (we use email as userId in DynamoDB)
+    const email = event.requestContext.authorizer?.claims.email;
     
-    if (!userId) {
+    if (!email) {
       return {
         statusCode: 401,
         headers,
-        body: JSON.stringify({ error: 'Unauthorized' }),
+        body: JSON.stringify({ error: 'Unauthorized - no email in token' }),
       };
     }
 
+    console.log('🔍 Fetching profile for user:', email);
+
     const params = {
       TableName: process.env.USER_TABLE!,
-      Key: { userId },
+      Key: { userId: email }, // Use email as userId
     };
 
     const result = await dynamoDb.send(new GetCommand(params));
     
     if (!result.Item) {
+      console.log('⚠️ User not found in DynamoDB:', email);
       return {
         statusCode: 404,
         headers,
         body: JSON.stringify({ error: 'User not found' }),
       };
     }
+
+    console.log('✅ User profile found:', result.Item);
 
     return {
       statusCode: 200,

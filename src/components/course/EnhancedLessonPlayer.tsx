@@ -7,6 +7,7 @@ import { Lesson, Quiz, Question } from '@/data/courseContent';
 
 interface EnhancedLessonPlayerProps {
   lesson: Lesson;
+  courseId: string; // Add courseId prop
   onComplete: () => void;
   onNext?: () => void;
   onPrevious?: () => void;
@@ -15,7 +16,8 @@ interface EnhancedLessonPlayerProps {
 }
 
 export function EnhancedLessonPlayer({ 
-  lesson, 
+  lesson,
+  courseId, // Destructure courseId
   onComplete, 
   onNext, 
   onPrevious, 
@@ -69,7 +71,8 @@ export function EnhancedLessonPlayer({
       case 'video':
         return (
           <VideoLesson 
-            lesson={lesson} 
+            lesson={lesson}
+            courseId={courseId}
             onComplete={handleVideoComplete}
             onProgress={handleVideoProgress}
             progress={progress}
@@ -214,8 +217,9 @@ export function EnhancedLessonPlayer({
 }
 
 // Video Lesson Component
-function VideoLesson({ lesson, onComplete, onProgress, progress }: {
+function VideoLesson({ lesson, courseId, onComplete, onProgress, progress }: {
   lesson: Lesson;
+  courseId: string;
   onComplete: () => void;
   onProgress: (currentTime: number, duration: number) => void;
   progress: number;
@@ -224,13 +228,12 @@ function VideoLesson({ lesson, onComplete, onProgress, progress }: {
     <div className="space-y-6">
       {/* Video Player */}
       <VideoPlayer
-        src={lesson.videoUrl || "/api/placeholder-video.mp4"}
+        videoId={lesson.videoId || lesson.id}
+        courseId={lesson.courseId || courseId}
         title={lesson.title}
-        videoId={lesson.id}
         userId="current-user"
         onProgress={onProgress}
         onComplete={onComplete}
-        poster={lesson.thumbnail}
       />
 
       {/* Video Controls */}

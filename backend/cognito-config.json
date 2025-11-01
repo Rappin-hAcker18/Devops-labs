@@ -1,0 +1,51 @@
+{
+  "PoolName": "cloudcrew-academy-users",
+  "Policies": {
+    "PasswordPolicy": {
+      "MinimumLength": 8,
+      "RequireUppercase": true,
+      "RequireLowercase": true,
+      "RequireNumbers": true,
+      "RequireSymbols": false,
+      "TemporaryPasswordValidityDays": 7
+    }
+  },
+  "AutoVerifiedAttributes": ["email"],
+  "AliasAttributes": ["email"],
+  "VerificationMessageTemplate": {
+    "EmailMessage": "Welcome to CloudCrew Academy! Your verification code is {####}. Ready to launch your tech career?",
+    "EmailSubject": "CloudCrew Academy - Email Verification",
+    "DefaultEmailOption": "CONFIRM_WITH_CODE"
+  },
+  "EmailVerificationSubject": "Welcome to CloudCrew Academy - Verify Your Email",
+  "EmailVerificationMessage": "Welcome to CloudCrew Academy! Your verification code is {####}. Start your cloud engineering journey today!",
+  "Schema": [
+    {
+      "Name": "email",
+      "Required": true,
+      "Mutable": true,
+      "AttributeDataType": "String"
+    },
+    {
+      "Name": "given_name",
+      "Required": true,
+      "Mutable": true,
+      "AttributeDataType": "String"
+    },
+    {
+      "Name": "family_name",
+      "Required": true,
+      "Mutable": true,
+      "AttributeDataType": "String"
+    },
+    {
+      "Name": "subscription_tier",
+      "Mutable": true,
+      "AttributeDataType": "String",
+      "DeveloperOnlyAttribute": false
+    }
+  ],
+  "AdminCreateUserConfig": {
+    "AllowAdminCreateUserOnly": false
+  }
+}

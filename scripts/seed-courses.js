@@ -171,6 +171,70 @@ const sampleCourses = [
     careerServices: true,
     jobPlacementAssistance: true
   }
+  ,
+  {
+    courseId: 'cloud-engineering-all-levels',
+    title: 'Cloud Engineering (All Levels)',
+    description: 'A complete path from fundamentals to advanced cloud engineering with hands-on AWS labs and projects.',
+    difficulty: 'Beginner to Advanced',
+    duration: '12 weeks',
+    tier: 'standard',
+    modules: 30,
+    estimatedHours: 80,
+    thumbnail: '/images/courses/cloud-engineering-all-levels.jpg',
+    skills: ['AWS', 'Networking', 'Security', 'Serverless', 'IaC', 'CI/CD'],
+    learningOutcomes: [
+      'Understand core cloud concepts and AWS services',
+      'Design secure, scalable architectures',
+      'Build serverless APIs and event-driven systems',
+      'Automate infrastructure with Terraform',
+      'Implement CI/CD pipelines and observability'
+    ],
+    modules_detail: [
+      {
+        moduleId: 1,
+        title: 'Foundations',
+        lessons: [
+          { id: 1, title: 'Cloud and AWS Basics', duration: '10 mins', type: 'video' },
+          { id: 2, title: 'Identity & Access (IAM)', duration: '15 mins', type: 'video' },
+          { id: 3, title: 'Hands-on: Launch Your First EC2', duration: '20 mins', type: 'hands-on' }
+        ]
+      },
+      {
+        moduleId: 2,
+        title: 'Networking & Storage',
+        lessons: [
+          { id: 4, title: 'VPC, Subnets, and Security Groups', duration: '18 mins', type: 'video' },
+          { id: 5, title: 'S3 Storage Deep Dive', duration: '16 mins', type: 'video' },
+          { id: 6, title: 'Hands-on: Static Website on S3 + CloudFront', duration: '25 mins', type: 'hands-on' }
+        ]
+      },
+      {
+        moduleId: 3,
+        title: 'Serverless & IaC',
+        lessons: [
+          { id: 7, title: 'Lambda, API Gateway, and Events', duration: '20 mins', type: 'video' },
+          { id: 8, title: 'Intro to Terraform on AWS', duration: '18 mins', type: 'video' },
+          { id: 9, title: 'Hands-on: Serverless API with Terraform', duration: '40 mins', type: 'hands-on' }
+        ]
+      }
+    ],
+    pricing: 49,
+    certificateAvailable: true,
+    prerequisites: 'No prior experience required (guided path)',
+    targetAudience: 'Young adults, adults, and career-changers seeking cloud roles',
+    instructor: {
+      name: 'CloudCrew Instructors',
+      bio: 'AWS-certified experts from industry',
+      experience: '10+ years in cloud and DevOps'
+    },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isActive: true,
+    enrollmentCount: 0,
+    averageRating: 0,
+    reviews: 0
+  }
 ];
 
 // Function to seed the database

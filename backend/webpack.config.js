@@ -10,6 +10,9 @@ module.exports = {
     'payments': './src/handlers/payments.ts',
     'progress': './src/handlers/progress.ts',
     'users': './src/handlers/users.ts',
+    'videos': './src/handlers/videos.ts',
+    'analytics': './src/handlers/analytics.ts',
+    'webhooks': './src/handlers/webhooks.ts',
   },
   output: {
     path: path.resolve(__dirname, '.webpack'),

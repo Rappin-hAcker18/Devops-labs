@@ -10,7 +10,9 @@ export interface Lesson {
   type: 'video' | 'lab' | 'interactive' | 'article' | 'quiz';
   duration: string;
   content: string;
-  videoUrl?: string;
+  videoId?: string; // ID of video in S3/CloudFront
+  courseId?: string; // Course this lesson belongs to
+  videoUrl?: string; // Legacy - will be replaced by CloudFront URLs
   thumbnail?: string;
   labInstructions?: string;
   resources?: Resource[];
@@ -95,6 +97,8 @@ Cloud computing is the delivery of computing services—including servers, stora
 - **PaaS** (Platform as a Service) - Development platforms and tools
 - **SaaS** (Software as a Service) - Complete applications delivered over the web
         `,
+        videoId: "aws-fundamentals/1761899619938-lizzo_mixdown.mp4",
+        courseId: "aws-fundamentals",
         videoUrl: "/videos/aws-fundamentals/cloud-computing-intro.mp4",
         thumbnail: "/lessons/cloud-intro-thumb.svg",
         resources: [
@@ -762,6 +766,8 @@ Serverless computing is a cloud execution model where the cloud provider dynamic
 - **Global Scale** - Automatically available worldwide
 - **No Maintenance** - Focus on building, not maintaining servers
         `,
+        videoId: "serverless-development/1761452366972-RNN Ep1.mpeg",
+        courseId: "serverless-architecture",
         videoUrl: "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
         thumbnail: "/lessons/serverless-intro-thumb.jpg",
         resources: [

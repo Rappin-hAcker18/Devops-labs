@@ -1,0 +1,47 @@
+name: CI - Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+      - staging
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint --if-present
+
+      - name: Run unit tests
+        run: npm test -- --passWithNoTests
+
+      - name: Run build
+        run: npm run build
+        env:
+          NEXT_PUBLIC_AWS_REGION: us-east-1
+          NEXT_PUBLIC_COGNITO_USER_POOL_ID: test
+          NEXT_PUBLIC_COGNITO_CLIENT_ID: test
+          NEXT_PUBLIC_API_URL: http://localhost:3000/api
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_dummy
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        if: success()
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false

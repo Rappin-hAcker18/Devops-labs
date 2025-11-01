@@ -7,7 +7,7 @@ const dynamoClient = new DynamoDBClient({ region: process.env.AWS_REGION });
 const docClient = DynamoDBDocumentClient.from(dynamoClient);
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2023-10-16'
+  apiVersion: '2025-09-30.clover'
 });
 
 const PAYMENT_TABLE = process.env.PAYMENT_TABLE!;
@@ -20,22 +20,25 @@ const corsHeaders = {
   'Access-Control-Allow-Methods': 'GET,POST,PUT,DELETE,OPTIONS'
 };
 
-// Price mapping for the 3-tier system
+ // Price mapping for CloudCrew Academy 3-tier system
 const SUBSCRIPTION_PRICES = {
   free: {
     amount: 0,
     currency: 'usd',
-    tier: 'free'
+    tier: 'free',
+    priceId: null
   },
   standard: {
     amount: 4900, // $49.00 in cents
     currency: 'usd',
-    tier: 'standard'
+    tier: 'standard',
+    priceId: process.env.STRIPE_STANDARD_PRICE_ID || 'price_standard_placeholder'
   },
   premium: {
-    amount: 14900, // $149.00 in cents
+    amount: 59700, // $597.00 in cents
     currency: 'usd',
-    tier: 'premium'
+    tier: 'premium',
+    priceId: process.env.STRIPE_PREMIUM_PRICE_ID || 'price_premium_placeholder'
   }
 };
 
@@ -324,6 +327,105 @@ export const cancelSubscription = async (event: APIGatewayProxyEvent): Promise<A
       headers: corsHeaders,
       body: JSON.stringify({
         message: error.message || 'Failed to cancel subscription'
+      })
+    };
+  }
+};
+
+// Create Stripe Checkout Session for subscriptions
+export const createCheckoutSession = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  try {
+    // Allow both authenticated and unauthenticated users to create checkout sessions
+    const userId = event.requestContext.authorizer?.claims?.sub || 'anonymous';
+
+    if (!event.body) {
+      return {
+        statusCode: 400,
+        headers: corsHeaders,
+        body: JSON.stringify({ message: 'Request body is required' })
+      };
+    }
+
+    const { tier, successUrl, cancelUrl } = JSON.parse(event.body);
+
+    if (!tier || !SUBSCRIPTION_PRICES[tier as keyof typeof SUBSCRIPTION_PRICES]) {
+      return {
+        statusCode: 400,
+        headers: corsHeaders,
+        body: JSON.stringify({ message: 'Invalid subscription tier' })
+      };
+    }
+
+    // For free tier, no checkout needed
+    if (tier === 'free') {
+      return {
+        statusCode: 400,
+        headers: corsHeaders,
+        body: JSON.stringify({ message: 'No checkout required for free tier' })
+      };
+    }
+
+    const priceInfo = SUBSCRIPTION_PRICES[tier as keyof typeof SUBSCRIPTION_PRICES];
+    
+    // Create checkout session (subscription)
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          // Use recurring price ID for subscription
+          price: priceInfo.priceId || process.env.STRIPE_STANDARD_PRICE_ID,
+          quantity: 1,
+        },
+      ],
+      mode: 'subscription',
+      success_url: successUrl || `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}&tier=${tier}`,
+      cancel_url: cancelUrl || `${process.env.FRONTEND_URL}/pricing`,
+      metadata: {
+        userId,
+        tier,
+        priceId: priceInfo.priceId,
+        type: 'subscription_upgrade'
+      },
+      customer_email: event.requestContext.authorizer?.claims?.email,
+    });
+
+    // Store checkout session record
+    const checkoutRecord = {
+      paymentId: session.id, // Add this as the primary key
+      sessionId: session.id,
+      userId,
+      tier,
+      amount: priceInfo.amount,
+      currency: priceInfo.currency,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      stripeSessionId: session.id
+    };
+
+    const putCommand = new PutCommand({
+      TableName: PAYMENT_TABLE,
+      Item: checkoutRecord
+    });
+
+    await docClient.send(putCommand);
+
+    return {
+      statusCode: 200,
+      headers: corsHeaders,
+      body: JSON.stringify({
+        sessionId: session.id,
+        checkoutUrl: session.url
+      })
+    };
+
+  } catch (error: any) {
+    console.error('Error creating checkout session:', error);
+    
+    return {
+      statusCode: 500,
+      headers: corsHeaders,
+      body: JSON.stringify({
+        message: error.message || 'Failed to create checkout session'
       })
     };
   }

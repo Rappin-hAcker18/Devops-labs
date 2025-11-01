@@ -15,7 +15,9 @@ import {
   CheckCircle,
   Star,
   Target,
-  Zap
+  Zap,
+  Award,
+  Download
 } from "lucide-react";
 
 const recentActivity = [
@@ -100,6 +102,16 @@ const achievements = [
   { name: "Cloud Architect", icon: "☁️", earned: true },
   { name: "Serverless Expert", icon: "🚀", earned: false },
   { name: "Security Specialist", icon: "🔒", earned: false }
+];
+
+const certificates = [
+  {
+    id: "cert-001",
+    courseId: "aws-fundamentals",
+    courseName: "AWS Fundamentals for Beginners",
+    completionDate: "2024-10-15",
+    certificateNumber: "CC-12345678"
+  }
 ];
 
 export default function DashboardPage() {
@@ -274,6 +286,56 @@ export default function DashboardPage() {
                       ))}
                     </div>
                   </div>
+                </div>
+
+                {/* Certificates */}
+                <div>
+                  <h3 className="text-lg font-display font-semibold text-dark-text-primary mb-4 flex items-center gap-2">
+                    <Award className="w-5 h-5 text-primary-400" />
+                    My Certificates
+                  </h3>
+                  {certificates.length > 0 ? (
+                    <div className="space-y-3">
+                      {certificates.map((cert) => (
+                        <div key={cert.id} className="card hover:card-hover transition-all duration-300">
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex-1">
+                              <h4 className="font-medium text-dark-text-primary text-sm mb-1">
+                                {cert.courseName}
+                              </h4>
+                              <p className="text-xs text-dark-text-muted mb-2">
+                                Completed: {new Date(cert.completionDate).toLocaleDateString()}
+                              </p>
+                              <p className="text-xs text-dark-text-secondary font-mono">
+                                {cert.certificateNumber}
+                              </p>
+                            </div>
+                            <Link
+                              href={`/certificates?courseId=${cert.courseId}`}
+                              className="p-2 bg-primary-500/20 hover:bg-primary-500 text-primary-400 hover:text-white rounded-lg transition-colors duration-200"
+                              title="View Certificate"
+                            >
+                              <Award className="w-4 h-4" />
+                            </Link>
+                          </div>
+                        </div>
+                      ))}
+                      <Link
+                        href="/certificates"
+                        className="block text-center text-sm text-primary-400 hover:text-primary-300 transition-colors duration-200"
+                      >
+                        View All Certificates →
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="card text-center">
+                      <Award className="w-12 h-12 text-dark-text-muted mx-auto mb-3" />
+                      <p className="text-sm text-dark-text-secondary mb-2">No certificates yet</p>
+                      <p className="text-xs text-dark-text-muted">
+                        Complete a course to earn your first certificate
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Upcoming Events */}

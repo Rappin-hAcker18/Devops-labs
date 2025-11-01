@@ -2,29 +2,66 @@
 
 > 🏙️ **Empowering urban communities with cutting-edge cloud engineering skills for economic opportunity**
 
-A modern, serverless Cloud Engineering course platform targeting urban youth and adults. Built with Next.js, AWS Lambda, and a mobile-first approach.
+A modern, serverless Cloud Engineering course platform targeting urban youth and adults. Built with Next.js, AWS, and a mobile-first approach.
 
-## 🚀 Features
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
+[![AWS](https://img.shields.io/badge/AWS-Serverless-orange)](https://aws.amazon.com/)
 
-### 💰 3-Tier Payment System
-- **Free Starter**: Basic courses and community access
-- **Standard Pro**: Full course library with hands-on AWS labs
-- **Premium Elite**: 1-on-1 mentoring and career coaching
+## 🚀 Live Demo
 
-### 🎯 Target Audience Focus
-- Urban youth and professionals seeking economic opportunities
+- **Production**: Coming soon
+- **Staging**: Coming soon
+- **Local Dev**: `http://localhost:3000`
+
+## ✨ Features
+
+### 🎓 Complete Learning Platform
+- **3 Comprehensive Courses**: AWS Fundamentals, Serverless Architecture, Cloud Security
+- **Video Lessons**: Streaming via CloudFront CDN
+- **Progress Tracking**: Real-time course completion tracking
+- **Interactive Labs**: Hands-on AWS practice environments
+- **Course Certificates**: Downloadable, verifiable completion certificates
+
+### 💳 2-Tier Payment System
+- **Free Tier**: Course overviews and community access
+- **Pro Plan ($49/mo)**: Full access to all 3 courses, labs, and premium features
+
+### 👥 Community Features
+- **Discussion Forum**: Q&A, discussions, success stories
+- **User Profiles**: Track achievements and certificates
+- **Admin Dashboard**: Complete platform management tools
+
+### 🎯 Target Audience
+- Urban youth and professionals seeking tech careers
 - Mobile-first responsive design
 - Community-driven learning approach
-- Cultural representation in design and messaging
+- Economic opportunity focus
 
 ### ⚡ Technology Stack
-- **Frontend**: Next.js 15 with TypeScript
-- **UI**: Tailwind CSS with custom urban theme
-- **Backend**: AWS Lambda functions (Node.js)
-- **Database**: DynamoDB
-- **Authentication**: AWS Cognito
-- **Payments**: Stripe integration
-- **Deployment**: Serverless Framework
+
+**Frontend:**
+- Next.js 15.5.6 with TypeScript
+- Tailwind CSS with custom urban theme
+- React 19 with Server Components
+- Responsive mobile-first design
+
+**Backend:**
+- AWS Lambda with Serverless Framework
+- Node.js 18.x runtime
+- API Gateway for REST endpoints
+- DynamoDB for data storage
+
+**Authentication & Payments:**
+- AWS Cognito for user management
+- Stripe for subscription payments
+- Webhook integration for real-time updates
+
+**Media & Storage:**
+- S3 for video storage
+- CloudFront CDN for global delivery
+- HLS video streaming
 
 ## 🏗️ Architecture
 
@@ -33,52 +70,118 @@ A modern, serverless Cloud Engineering course platform targeting urban youth and
 │   Next.js App   │────│   API Gateway    │────│  Lambda Functions│
 │  (Frontend)     │    │                  │    │   (Backend)     │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
-                                │                        │
-                                │                        │
-                       ┌──────────────────┐    ┌─────────────────┐
-                       │   CloudFront     │    │   DynamoDB      │
-                       │   (CDN)          │    │   (Database)    │
-                       └──────────────────┘    └─────────────────┘
+        │                       │                        │
+        │                       │                        │
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Cognito       │    │   CloudFront     │    │   DynamoDB      │
+│   (Auth)        │    │   (CDN)          │    │   (Database)    │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+        │                       │                        │
+        │                       │                        │
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Stripe        │    │   S3             │    │   Vercel        │
+│   (Payments)    │    │   (Storage)      │    │   (Hosting)     │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js 18+ and npm
-- AWS CLI configured
-- Serverless Framework installed globally
+- AWS CLI configured with credentials
+- Git
 
-### Installation
+### Local Development
 
-1. **Clone and install dependencies**
+1. **Clone repository**
    ```bash
-   git clone <repository-url>
-   cd The_Work
-   npm install
+   git clone https://github.com/YOUR_USERNAME/cloudcrew-academy.git
+   cd cloudcrew-academy
    ```
 
-2. **Install Serverless Framework globally**
+2. **Install dependencies**
    ```bash
-   npm install -g serverless
+   npm install
+   cd backend && npm install && cd ..
    ```
 
 3. **Configure environment variables**
    ```bash
-   # Create .env.local file
+   # Copy example environment file
    cp .env.example .env.local
    
-   # Add your environment variables
-   NEXT_PUBLIC_API_URL=http://localhost:3000/api
-   STRIPE_PUBLISHABLE_KEY=pk_test_...
-   STRIPE_SECRET_KEY=sk_test_...
+   # Edit .env.local with your values:
+   # - AWS Cognito credentials
+   # - Stripe test keys
+   # - API Gateway URL
    ```
 
-4. **Start development server**
+4. **Start development servers**
    ```bash
+   # Terminal 1: Frontend
+   npm run dev
+   
+   # Terminal 2: Backend (optional for local API testing)
+   cd backend
    npm run dev
    ```
 
-Visit [http://localhost:3000](http://localhost:3000) to see the application.
+5. **Open browser**
+   ```
+   http://localhost:3000
+   ```
+
+### Testing
+
+```bash
+# Run all tests
+npm test
+
+# Run E2E tests
+npm run test:e2e
+
+# Run unit tests
+npm run test:unit
+
+# Run with coverage
+npm run test:coverage
+```
+
+## 📚 Documentation
+
+- **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Complete production deployment instructions
+- **[Quick Deploy](DEPLOY.md)** - Quick reference commands for deployment
+- **[Certificate System](docs/certificate-system.md)** - Certificate generation and verification
+- **[Stripe Setup](docs/stripe-setup-guide.md)** - Payment integration setup
+- **[Video Infrastructure](docs/video-infrastructure-setup.md)** - Video streaming setup
+- **[Development Standards](DEVELOPMENT_STANDARDS.md)** - Code standards and best practices
+
+## 🌐 Deployment
+
+### Production Deployment (Vercel - Recommended)
+
+```bash
+# Install Vercel CLI
+npm i -g vercel
+
+# Login and deploy
+vercel login
+vercel --prod
+```
+
+See [DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md) for detailed instructions.
+
+### Backend Deployment
+
+```bash
+cd backend
+
+# Deploy to production
+npx serverless deploy --stage prod
+
+# Deploy to staging
+npx serverless deploy --stage staging
+```
 
 ## 🎨 Design System
 

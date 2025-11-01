@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Play, Clock, Users, TrendingUp, Download, Search, Filter, Grid, List } from 'lucide-react';
 import { VideoStorage, VideoMetadata, VideoAnalytics } from '@/lib/video';
 import { VideoPlayer } from './VideoPlayer';
@@ -305,10 +306,12 @@ function VideoCard({ video, viewMode, onSelect }: VideoCardProps) {
         <div className="flex items-center gap-6">
           <div className="relative w-32 h-20 rounded-lg overflow-hidden bg-dark-bg-secondary flex-shrink-0">
             {video.thumbnail ? (
-              <img 
-                src={video.thumbnail} 
+              <Image
+                src={video.thumbnail}
                 alt={video.title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 50vw, 128px"
               />
             ) : (
               <div className="w-full h-full flex items-center justify-center">
@@ -358,10 +361,12 @@ function VideoCard({ video, viewMode, onSelect }: VideoCardProps) {
     >
       <div className="relative aspect-video bg-dark-bg-secondary">
         {video.thumbnail ? (
-          <img 
-            src={video.thumbnail} 
+          <Image
+            src={video.thumbnail}
             alt={video.title}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="(max-width: 1024px) 100vw, 320px"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">

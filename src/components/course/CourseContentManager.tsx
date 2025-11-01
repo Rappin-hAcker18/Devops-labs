@@ -225,6 +225,7 @@ export function CourseContentManager({ courseId, userId }: CourseContentManagerP
           
           <EnhancedLessonPlayer
             lesson={selectedLesson}
+            courseId={courseId}
             onComplete={() => handleLessonComplete(selectedLesson.id)}
             onNext={nextLesson && unlockedLessons.has(nextLesson.id) ? handleNextLesson : undefined}
             onPrevious={prevLesson ? handlePreviousLesson : undefined}

@@ -1,127 +1,325 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Play, Pause } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { Play, Pause, Volume2, VolumeX, Maximize, RotateCw } from "lucide-react";
 
 interface VideoPlayerProps {
-  src: string;
+  videoId: string;
+  courseId: string;
   title: string;
-  videoId?: string;
   userId?: string;
   onProgress?: (currentTime: number, duration: number) => void;
   onComplete?: () => void;
-  poster?: string;
   autoPlay?: boolean;
 }
 
 export function VideoPlayer({ 
-  src, 
+  videoId,
+  courseId,
   title, 
-  videoId, 
   userId, 
   onProgress, 
   onComplete, 
-  poster, 
   autoPlay = false 
 }: VideoPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const hasCompletedRef = useRef(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const startLesson = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
+  const trackProgress = useCallback(async (
+    currentTime: number,
+    totalDuration: number,
+    completed = false
+  ) => {
+    try {
+      await fetch('/api/videos/progress', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          videoId,
+          courseId,
+          currentTime,
+          duration: totalDuration,
+          completed
+        })
+      });
+    } catch (err) {
+      console.error('Failed to track progress:', err);
     }
+  }, [videoId, courseId]);
 
-    setIsPlaying(true);
-    setProgress(0);
-    hasCompletedRef.current = false;
-
-    let currentProgress = 0;
-    intervalRef.current = setInterval(() => {
-      currentProgress += 5;
-      setProgress(currentProgress);
-
-      // Call onProgress callback if provided
-      if (onProgress) {
-        onProgress(currentProgress, 100);
-      }
-
-      if (currentProgress >= 100) {
-        clearInterval(intervalRef.current!);
-        setIsPlaying(false);
+  // Fetch video metadata and CloudFront URL
+  useEffect(() => {
+    const fetchVideoUrl = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
         
-        // Only call onComplete once
-        if (!hasCompletedRef.current && onComplete) {
-          hasCompletedRef.current = true;
-          onComplete();
+        const response = await fetch(`/api/videos/metadata?videoId=${videoId}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to load video');
+        }
+        
+        const data = await response.json();
+        
+        if (data.video?.cloudFrontUrl) {
+          setVideoUrl(data.video.cloudFrontUrl);
+        } else {
+          // Fallback: construct CloudFront URL from videoId
+          const cloudFrontDomain = process.env.NEXT_PUBLIC_CLOUDFRONT_DOMAIN;
+          setVideoUrl(`https://${cloudFrontDomain}/videos/${videoId}`);
+        }
+      } catch (err) {
+        console.error('Error fetching video:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load video');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (videoId) {
+      fetchVideoUrl();
+    }
+  }, [videoId]);
+
+  // Track video progress
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const handleTimeUpdate = () => {
+      const current = video.currentTime;
+      const total = video.duration;
+      
+      if (total > 0) {
+        const progressPercent = (current / total) * 100;
+        setProgress(progressPercent);
+        setCurrentTime(current);
+        setDuration(total);
+
+        // Call onProgress callback
+        if (onProgress) {
+          onProgress(current, total);
+        }
+
+        // Track progress in backend every 5 seconds
+        if (userId && Math.floor(current) % 5 === 0) {
+          trackProgress(current, total);
         }
       }
-    }, 200);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      if (onComplete) {
+        onComplete();
+      }
+      if (userId) {
+        trackProgress(duration, duration, true);
+      }
+    };
+
+    const handleLoadedMetadata = () => {
+      setDuration(video.duration);
+    };
+
+    video.addEventListener('timeupdate', handleTimeUpdate);
+    video.addEventListener('ended', handleEnded);
+    video.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+    return () => {
+      video.removeEventListener('timeupdate', handleTimeUpdate);
+      video.removeEventListener('ended', handleEnded);
+      video.removeEventListener('loadedmetadata', handleLoadedMetadata);
+    };
+  }, [userId, duration, onProgress, onComplete, trackProgress]);
+
+  const togglePlay = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isPlaying) {
+      video.pause();
+      setIsPlaying(false);
+    } else {
+      video.play();
+      setIsPlaying(true);
+    }
   };
 
-  const stopLesson = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    setIsPlaying(false);
-    setProgress(0);
-    hasCompletedRef.current = false;
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = !isMuted;
+    setIsMuted(!isMuted);
   };
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const newVolume = parseFloat(e.target.value);
+    video.volume = newVolume;
+    setVolume(newVolume);
+    setIsMuted(newVolume === 0);
+  };
+
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const seekTime = (parseFloat(e.target.value) / 100) * duration;
+    video.currentTime = seekTime;
+  };
+
+  const toggleFullscreen = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (document.fullscreenElement) {
+      document.exitFullscreen();
+    } else {
+      video.requestFullscreen();
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    if (isNaN(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  if (isLoading) {
+    return (
+      <div className="relative bg-gradient-to-br from-slate-900 to-blue-900 aspect-video rounded-lg overflow-hidden flex items-center justify-center">
+        <div className="text-center text-white">
+          <RotateCw className="w-12 h-12 animate-spin mx-auto mb-4" />
+          <p className="text-lg">Loading video...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !videoUrl) {
+    return (
+      <div className="relative bg-gradient-to-br from-slate-900 to-red-900 aspect-video rounded-lg overflow-hidden flex items-center justify-center">
+        <div className="text-center text-white">
+          <p className="text-lg text-red-300 mb-2">Failed to load video</p>
+          <p className="text-sm text-slate-300">{error || 'Video URL not available'}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="relative bg-gradient-to-br from-slate-900 to-blue-900 aspect-video rounded-lg overflow-hidden">
-      {/* Debug Info */}
-      <div className="absolute top-2 left-2 bg-black/50 text-white text-xs px-2 py-1 rounded z-50">
-        Playing: {isPlaying ? 'YES' : 'NO'} | Progress: {progress}%
-      </div>
+    <div className="relative bg-black rounded-lg overflow-hidden group">
+      <video
+        ref={videoRef}
+        className="w-full aspect-video"
+        src={videoUrl}
+        autoPlay={autoPlay}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+      />
 
-      {!isPlaying && progress === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center p-8">
-          <div className="text-center text-white max-w-lg">
-            <div className="w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6">
-              <Play className="w-12 h-12 text-white ml-1" />
+      {/* Video Controls Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        {/* Title */}
+        <div className="absolute top-4 left-4 right-4">
+          <h3 className="text-white font-semibold text-lg drop-shadow-lg">{title}</h3>
+        </div>
+
+        {/* Bottom Controls */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 space-y-2">
+          {/* Progress Bar */}
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={progress}
+            onChange={handleSeek}
+            className="w-full h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+            style={{
+              background: `linear-gradient(to right, #3b82f6 ${progress}%, #4b5563 ${progress}%)`
+            }}
+          />
+
+          {/* Control Buttons */}
+          <div className="flex items-center justify-between text-white">
+            <div className="flex items-center gap-4">
+              {/* Play/Pause */}
+              <button
+                onClick={togglePlay}
+                className="hover:scale-110 transition-transform"
+              >
+                {isPlaying ? (
+                  <Pause className="w-6 h-6" />
+                ) : (
+                  <Play className="w-6 h-6 ml-0.5" />
+                )}
+              </button>
+
+              {/* Volume */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={toggleMute}
+                  className="hover:scale-110 transition-transform"
+                >
+                  {isMuted ? (
+                    <VolumeX className="w-5 h-5" />
+                  ) : (
+                    <Volume2 className="w-5 h-5" />
+                  )}
+                </button>
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.1"
+                  value={volume}
+                  onChange={handleVolumeChange}
+                  className="w-20 h-1 bg-gray-600 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+
+              {/* Time */}
+              <span className="text-sm">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </span>
             </div>
-            
-            <h3 className="text-3xl font-bold mb-4">{title}</h3>
-            <p className="text-blue-200 mb-6 text-lg">Professional AWS Training Content</p>
-            
+
+            {/* Fullscreen */}
             <button
-              onClick={startLesson}
-              className="w-full px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
+              onClick={toggleFullscreen}
+              className="hover:scale-110 transition-transform"
             >
-              ▶ Start AWS Lesson
+              <Maximize className="w-5 h-5" />
             </button>
           </div>
         </div>
-      )}
+      </div>
 
-      {isPlaying && (
-        <div className="absolute inset-0 bg-slate-900/90 flex items-center justify-center">
-          <div className="text-center text-white">
-            <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-              <Pause className="w-8 h-8 text-white" />
-            </div>
-            <h4 className="text-xl font-semibold mb-2">Learning in Progress...</h4>
-            <p className="text-blue-200 mb-4">{title}</p>
-            <div className="w-64 h-2 bg-slate-700 rounded-full mx-auto">
-              <div 
-                className="h-full bg-gradient-to-r from-blue-400 to-purple-500 rounded-full transition-all duration-200"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <p className="text-sm text-slate-400 mt-2">
-              {progress}% Complete
-            </p>
-            <button
-              onClick={stopLesson}
-              className="mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm transition-colors"
-            >
-              Stop Lesson
-            </button>
-          </div>
+      {/* Play Button Overlay (when paused) */}
+      {!isPlaying && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <button
+            onClick={togglePlay}
+            className="w-20 h-20 bg-blue-600/90 hover:bg-blue-500 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 shadow-2xl"
+          >
+            <Play className="w-10 h-10 text-white ml-1" />
+          </button>
         </div>
       )}
     </div>

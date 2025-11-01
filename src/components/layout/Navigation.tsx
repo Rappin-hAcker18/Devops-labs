@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Menu, X, Zap, Book, Users, User, LogOut, BarChart3 } from 'lucide-react';
-import { isAuthenticated, getUserAccess } from '@/lib/access';
+import { Menu, X, Zap, Book, Users, LogOut, BarChart3 } from 'lucide-react';
+import { useAuth } from '@/lib/useAuth';
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isAuth, setIsAuth] = useState(false);
-  const [userTier, setUserTier] = useState<string>('free');
+  const [displayTier, setDisplayTier] = useState<string>('free');
+  const { user, isAuthenticated, isLoading, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,21 +19,30 @@ export function Navigation() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Update tier from localStorage or user object
   useEffect(() => {
-    setIsAuth(isAuthenticated());
-    if (isAuthenticated()) {
-      const access = getUserAccess();
-      setUserTier(access.tier);
-    }
-  }, []);
+    const updateTier = () => {
+      if (typeof window !== 'undefined') {
+        const storedTier = localStorage.getItem('subscriptionTier');
+        const tier = storedTier || user?.subscription_tier || 'free';
+        setDisplayTier(tier);
+      }
+    };
 
-  const handleLogout = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userEmail');
-      localStorage.removeItem('subscriptionTier');
-      window.location.href = '/';
-    }
+    updateTier();
+
+    // Listen for storage changes (when localStorage is updated)
+    window.addEventListener('storage', updateTier);
+    
+    return () => {
+      window.removeEventListener('storage', updateTier);
+    };
+  }, [user]);
+
+  const handleLogout = async () => {
+    await signOut();
+    setIsOpen(false);
+    window.location.href = '/';
   };
 
   return (
@@ -68,7 +77,9 @@ export function Navigation() {
             </Link>
             
             <div className="flex items-center space-x-3">
-              {isAuth ? (
+              {isLoading ? (
+                <div className="animate-pulse bg-slate-800 h-10 w-24 rounded-lg"></div>
+              ) : isAuthenticated ? (
                 <>
                   <Link href="/dashboard" className="text-slate-300 hover:text-white transition-colors duration-200 flex items-center gap-2">
                     <BarChart3 className="w-4 h-4" />
@@ -76,11 +87,11 @@ export function Navigation() {
                   </Link>
                   <div className="flex items-center gap-2">
                     <span className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${
-                      userTier === 'free' ? 'bg-yellow-500/20 text-yellow-400' :
-                      userTier === 'standard' ? 'bg-blue-500/20 text-blue-400' :
+                      displayTier === 'free' ? 'bg-yellow-500/20 text-yellow-400' :
+                      displayTier === 'standard' ? 'bg-blue-500/20 text-blue-400' :
                       'bg-purple-500/20 text-purple-400'
                     }`}>
-                      {userTier}
+                      {displayTier}
                     </span>
                     <button
                       onClick={handleLogout}
@@ -132,7 +143,11 @@ export function Navigation() {
                 About
               </Link>
               
-              {isAuth ? (
+              {isLoading ? (
+                <div className="pt-4 border-t border-slate-800">
+                  <div className="animate-pulse bg-slate-800 h-10 w-full rounded-lg"></div>
+                </div>
+              ) : isAuthenticated ? (
                 <div className="pt-4 space-y-3 border-t border-slate-800">
                   <Link href="/dashboard" className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors duration-200">
                     <BarChart3 className="w-4 h-4" />
@@ -140,11 +155,11 @@ export function Navigation() {
                   </Link>
                   <div className="flex items-center justify-between">
                     <span className={`text-xs px-2 py-1 rounded-full font-medium capitalize ${
-                      userTier === 'free' ? 'bg-yellow-500/20 text-yellow-400' :
-                      userTier === 'standard' ? 'bg-blue-500/20 text-blue-400' :
+                      displayTier === 'free' ? 'bg-yellow-500/20 text-yellow-400' :
+                      displayTier === 'standard' ? 'bg-blue-500/20 text-blue-400' :
                       'bg-purple-500/20 text-purple-400'
                     }`}>
-                      {userTier}
+                      {displayTier}
                     </span>
                     <button
                       onClick={handleLogout}

@@ -1,0 +1,65 @@
+# Vercel Deployment Configuration
+# https://vercel.com/docs/project-configuration
+
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "outputDirectory": ".next",
+  
+  "env": {
+    "NEXT_PUBLIC_ENVIRONMENT": "production"
+  },
+  
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_AWS_REGION": "@aws-region",
+      "NEXT_PUBLIC_COGNITO_USER_POOL_ID": "@cognito-pool-id",
+      "NEXT_PUBLIC_COGNITO_CLIENT_ID": "@cognito-client-id",
+      "NEXT_PUBLIC_API_URL": "@api-url",
+      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY": "@stripe-publishable-key",
+      "STRIPE_SECRET_KEY": "@stripe-secret-key",
+      "STRIPE_WEBHOOK_SECRET": "@stripe-webhook-secret"
+    }
+  },
+  
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "memory": 1024,
+      "maxDuration": 10
+    }
+  },
+  
+  "headers": [
+    {
+      "source": "/api/:path*",
+      "headers": [
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
+        { "key": "Access-Control-Allow-Headers", "value": "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" }
+      ]
+    }
+  ],
+  
+  "redirects": [
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    }
+  ],
+  
+  "rewrites": [
+    {
+      "source": "/api/backend/:path*",
+      "destination": "https://vhavj29513.execute-api.us-east-1.amazonaws.com/prod/:path*"
+    }
+  ],
+  
+  "regions": ["iad1"],
+  
+  "crons": []
+}

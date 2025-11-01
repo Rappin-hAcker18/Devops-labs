@@ -3,7 +3,7 @@
 import { PaymentTiers } from "@/components/sections/PaymentTiers";
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
-import { Check, X, Star } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const faqData = [
@@ -13,7 +13,7 @@ const faqData = [
   },
   {
     question: "Is there a student discount?",
-    answer: "Absolutely! Students get 50% off Standard and Premium plans with valid student ID verification."
+    answer: "Absolutely! Students get 50% off the Pro plan with valid student ID verification."
   },
   {
     question: "What payment methods do you accept?",
@@ -26,14 +26,14 @@ const faqData = [
 ];
 
 const comparisonFeatures = [
-  { feature: "Course Access", free: "3 intro courses", standard: "Complete library (15+ courses)", premium: "Complete library + early access" },
-  { feature: "Hands-on Labs", free: "Limited demos", standard: "Unlimited AWS labs", premium: "Unlimited labs + custom projects" },
-  { feature: "Community Access", free: "Basic forums", standard: "Private Discord + forums", premium: "VIP Discord + networking events" },
-  { feature: "Mentorship", free: false, standard: false, premium: "4 sessions/month" },
-  { feature: "Career Coaching", free: false, standard: false, premium: "Unlimited access" },
-  { feature: "Job Placement", free: false, standard: false, premium: "Dedicated support" },
-  { feature: "Certificates", free: "Course completion", standard: "Industry-recognized", premium: "Premium certificates" },
-  { feature: "Support", free: "Email only", standard: "Priority support", premium: "24/7 premium support" }
+  { feature: "Course Access", free: "AWS Fundamentals", pro: "Full Cloud Engineering path" },
+  { feature: "Hands-on Labs", free: "Guided demos", pro: "Unlimited AWS labs" },
+  { feature: "Projects", free: "Intro projects", pro: "Career-ready capstones" },
+  { feature: "Community", free: "Open forums", pro: "Private Discord + events" },
+  { feature: "Mentorship", free: false, pro: "Weekly office hours" },
+  { feature: "Career Coaching", free: false, pro: "Resume + interview prep" },
+  { feature: "Certificates", free: "Course completion", pro: "Industry-recognized" },
+  { feature: "Support", free: "Email", pro: "Priority response" }
 ];
 
 export default function PricingPage() {
@@ -83,14 +83,7 @@ export default function PricingPage() {
                     <tr className="border-b border-dark-border-primary">
                       <th className="text-left py-4 px-6 font-display font-semibold text-dark-text-primary">Features</th>
                       <th className="text-center py-4 px-6 font-display font-semibold text-dark-text-primary">Free</th>
-                      <th className="text-center py-4 px-6 font-display font-semibold text-dark-text-primary">
-                        Standard
-                        <div className="inline-flex items-center gap-1 ml-2">
-                          <Star className="w-4 h-4 text-accent-400" />
-                          <span className="text-xs text-accent-400">Popular</span>
-                        </div>
-                      </th>
-                      <th className="text-center py-4 px-6 font-display font-semibold text-dark-text-primary">Premium</th>
+                      <th className="text-center py-4 px-6 font-display font-semibold text-dark-text-primary">Pro (All Access)</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -105,17 +98,10 @@ export default function PricingPage() {
                           )}
                         </td>
                         <td className="py-4 px-6 text-center text-dark-text-secondary">
-                          {typeof item.standard === 'boolean' ? (
-                            item.standard ? <Check className="w-5 h-5 text-neon-green mx-auto" /> : <X className="w-5 h-5 text-error mx-auto" />
+                          {typeof item.pro === 'boolean' ? (
+                            item.pro ? <Check className="w-5 h-5 text-neon-green mx-auto" /> : <X className="w-5 h-5 text-error mx-auto" />
                           ) : (
-                            item.standard
-                          )}
-                        </td>
-                        <td className="py-4 px-6 text-center text-dark-text-secondary">
-                          {typeof item.premium === 'boolean' ? (
-                            item.premium ? <Check className="w-5 h-5 text-neon-green mx-auto" /> : <X className="w-5 h-5 text-error mx-auto" />
-                          ) : (
-                            item.premium
+                            item.pro
                           )}
                         </td>
                       </tr>
@@ -162,10 +148,10 @@ export default function PricingPage() {
               
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button 
-                  onClick={() => router.push('/checkout?plan=standard')}
+                  onClick={() => router.push('/pricing#plans')}
                   className="bg-white text-primary-600 hover:bg-white/90 font-semibold py-4 px-8 rounded-xl transition-all duration-300"
                 >
-                  Start Free Trial
+                  Get Pro Access
                 </button>
                 <button 
                   onClick={() => router.push('/contact')}

@@ -2,50 +2,45 @@
 
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
-import { User, Lock, Mail, Eye, EyeOff, ArrowRight, Check } from "lucide-react";
+import { User, Lock, Mail, Eye, EyeOff, ArrowRight, Check, AlertCircle } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/useAuth";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("demo@cloudcrew.academy");
-  const [password, setPassword] = useState("demo123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const router = useRouter();
+  const { signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Simple demo authentication - any email/password combo works
-    if (email && password) {
-      // Store demo auth token
-      localStorage.setItem('authToken', 'demo-token-' + Date.now());
-      localStorage.setItem('userEmail', email);
-      localStorage.setItem('subscriptionTier', 'free'); // Start with free tier
+    try {
+      const result = await signIn(email, password);
       
-      // Redirect to courses
-      router.push("/courses");
+      if (result.success) {
+        // Force full page reload to ensure all components refresh with new tier
+        window.location.href = '/dashboard';
+      } else {
+        setError(result.error || 'Login failed. Please check your credentials.');
+      }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
-  const handleDemoLogin = async () => {
-    setIsLoading(true);
-    
-    // Instant demo login
-    localStorage.setItem('authToken', 'demo-token-' + Date.now());
-    localStorage.setItem('userEmail', 'demo@cloudcrew.academy');
-    localStorage.setItem('subscriptionTier', 'free');
-    
-    // Small delay for UX
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
-    router.push("/courses");
+  // Demo login function for testing
+  const handleDemoLogin = () => {
+    setEmail("demo@cloudcrew.academy");
+    setPassword("TempPassword123!");
   };
 
   return (
@@ -146,6 +141,14 @@ export default function LoginPage() {
                 </div>
               </div>
 
+              {/* Error Message */}
+              {error && (
+                <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-3 flex items-center gap-2">
+                  <AlertCircle className="h-5 w-5 text-red-400 flex-shrink-0" />
+                  <p className="text-red-300 text-sm">{error}</p>
+                </div>
+              )}
+
               {/* Submit Button */}
               <button
                 type="submit"
@@ -173,10 +176,10 @@ export default function LoginPage() {
               </a>
               
               <div className="pt-4 border-t border-slate-800">
-                <p className="text-xs text-slate-500 mb-3">Demo Credentials (for testing):</p>
+                <p className="text-xs text-slate-500 mb-3">Demo Access Available:</p>
                 <div className="text-xs text-slate-400 space-y-1">
-                  <p><strong>Email:</strong> demo@cloudcrew.academy</p>
-                  <p><strong>Password:</strong> demo123</p>
+                  <p>Click "Try Demo" above for instant free access</p>
+                  <p>Or create an account to save your progress</p>
                 </div>
               </div>
             </div>

@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
+import { api } from "@/lib/api";
 
 // Course data - in a real app, this would come from an API
 const courseData = {
@@ -182,8 +183,8 @@ const courseData = {
     duration: "8 weeks",
     students: 950,
     rating: 4.9,
-    price: "$149/mo",
-    tier: "premium",
+    price: "$49/mo",
+    tier: "standard",
     instructor: {
       name: "Jordan Smith",
       title: "Senior DevOps Engineer",
@@ -247,11 +248,42 @@ export default function CourseDetailPage() {
   const course = courseData[courseId as keyof typeof courseData];
   const [activeTab, setActiveTab] = useState("overview");
   const [isMounted, setIsMounted] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isCheckingEnrollment, setIsCheckingEnrollment] = useState(true);
 
   // Prevent hydration mismatch
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // Check if user is enrolled in this course
+  useEffect(() => {
+    const checkEnrollment = async () => {
+      if (!isAuthenticated()) {
+        setIsCheckingEnrollment(false);
+        return;
+      }
+
+      try {
+        const response = await api.getUserEnrollments();
+        if (response.data) {
+          const enrolled = response.data.some(
+            enrollment => enrollment.courseId === courseId && enrollment.status === 'active'
+          );
+          setIsEnrolled(enrolled);
+          console.log('✅ Enrollment check:', { courseId, enrolled });
+        }
+      } catch (error) {
+        console.error('❌ Error checking enrollment:', error);
+      } finally {
+        setIsCheckingEnrollment(false);
+      }
+    };
+
+    if (isMounted) {
+      checkEnrollment();
+    }
+  }, [isMounted, courseId]);
 
   const handleEnrollment = () => {
     console.log('🔥 Enrollment button clicked!', { courseId, course: course?.title });
@@ -373,19 +405,39 @@ export default function CourseDetailPage() {
                 <div className="card-elevated sticky top-24">
                   <div className="text-center mb-6">
                     <div className="text-3xl font-bold gradient-text mb-2">{course.price}</div>
-                    {course.tier !== 'free' && (
+                    {course.tier !== 'free' && !isEnrolled && (
                       <p className="text-dark-text-muted text-sm">Billed monthly</p>
+                    )}
+                    {isEnrolled && (
+                      <div className="flex items-center justify-center gap-2 mt-2">
+                        <CheckCircle className="w-4 h-4 text-green-400" />
+                        <p className="text-green-400 text-sm font-medium">You're enrolled!</p>
+                      </div>
                     )}
                   </div>
                   
                   {/* Enrollment Button */}
                   {isMounted ? (
-                    <button 
-                      onClick={handleEnrollment}
-                      className="w-full bg-urban-gradient text-white font-semibold py-4 rounded-xl hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-300 mb-6"
-                    >
-                      {course?.tier === 'free' ? 'Start Learning Free' : 'Enroll Now'}
-                    </button>
+                    isCheckingEnrollment ? (
+                      <div className="w-full bg-gray-600 text-white font-semibold py-4 rounded-xl mb-6 text-center">
+                        Checking enrollment...
+                      </div>
+                    ) : isEnrolled ? (
+                      <button 
+                        onClick={() => window.location.href = `/learn/${courseId}`}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-4 rounded-xl hover:shadow-lg hover:shadow-green-500/25 transition-all duration-300 mb-6 flex items-center justify-center gap-2"
+                      >
+                        <Play className="w-5 h-5" />
+                        Continue Learning
+                      </button>
+                    ) : (
+                      <button 
+                        onClick={handleEnrollment}
+                        className="w-full bg-urban-gradient text-white font-semibold py-4 rounded-xl hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-300 mb-6"
+                      >
+                        {course?.tier === 'free' ? 'Start Learning Free' : 'Enroll Now'}
+                      </button>
+                    )
                   ) : (
                     <div className="w-full bg-gray-600 text-white font-semibold py-4 rounded-xl mb-6 text-center">
                       Loading...
