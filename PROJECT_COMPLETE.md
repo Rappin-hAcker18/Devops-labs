@@ -104,7 +104,7 @@ All 10 major development milestones completed:
 ## 📁 Project Structure
 
 ```
-CloudCrew Academy/
+CloudCrew Academy/=
 ├── src/
 │   ├── app/                    # Next.js 15 app router
 │   │   ├── (pages)/           # 21 pages
